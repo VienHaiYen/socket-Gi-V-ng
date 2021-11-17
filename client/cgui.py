@@ -1,28 +1,31 @@
+from socket import AF_INET, socket, SOCK_STREAM
 from tkinter import *
 from tkinter import ttk
 import tkinter
 from PIL import Image, ImageTk
 from tkinter import scrolledtext
 import json
-
 import tkinter.messagebox as mbox
-
 import re
 
+HOST='127.0.0.1'
+PORT=33000
+BUFSIZE=1024
+FORMAT="utf8"
+CLIENT=socket(AF_INET,SOCK_STREAM)
+#connect to sever
+CLIENT.connect((HOST,PORT))
 
-
-
+#
 my_window =Tk()
 my_window.title('Client Version')
 my_window.geometry("400x350")
 
-
-#
 frame=Frame()
 frame.pack(side='top',fill='both',expand=True)
 frame.grid_rowconfigure(0,weight=1)
 frame.grid_columnconfigure(0,weight=1)
-
+#
 def outputResult(result):
     print(123445)
     global main_frame
@@ -153,10 +156,9 @@ def transfer():
 
 
 def MainSearch():
-    global search_page
-    search_page=Toplevel()
-    search_page.geometry("750x700")
-    search_page.title('ăn ở do trời')
+    search_page=Frame(frame)
+    my_window.geometry("750x700")
+    my_window.title('Tim kiem Vang')
     Label(search_page, text="Bạn đang đăng nhập bằng tài khoản "+ user_log, font=("ROBOTO", 13), fg="red").pack()
     global brand_box
     global company_box
@@ -171,6 +173,9 @@ def MainSearch():
     btn_frame.pack(pady=10, padx=5)
     submit_button=Button(btn_frame, text="SUBMIT", command=transfer,bg="#333", fg="#fff").grid(column=1, row=1)
     clear_button=Button(btn_frame, text="Clear all Resuls", command=clearFrame,bg="#333",fg="#fff").grid(column=2, row=1)
+
+    search_page.grid(row=0,column=0,sticky='nsew')
+    search_page.tkraise()
 
     global total_frame
     total_frame=Frame(search_page)
@@ -280,11 +285,11 @@ def logIn():
     input_login.pack()
     global username_box_log, password_box_log
     username=Label(input_login, text="User Name:").grid(column=1, row=1)
-    username_box_log=Text(input_login,width=20,height=1)
+    username_box_log=Entry(input_login)
     username_box_log.grid(column=2, row=1)
     Label(input_login, text="   ", height=1,font=("Arial",2)).grid(column=1, row=2)
     password=Label(input_login, text="Password: ").grid(column=1, row=3)
-    password_box_log=Text(input_login,width=20,height=1)
+    password_box_log=Entry(input_login)
     password_box_log.grid(column=2, row=3)
     Button(log_in,text="Log-in Account",bg="#000", fg="#fff",command=confirmAcc).pack(pady=20)
     Button(log_in,text="Go back to StartPage",bg="#000", fg="#fff",command=startPage).pack(pady=20)
@@ -292,24 +297,32 @@ def logIn():
     log_in.grid(row=0,column=0,sticky='nsew')
     log_in.tkraise()
 
+def sendList( list):
 
+    for item in list:
+        CLIENT.sendall(item.encode(FORMAT))
+        #wait response
+        CLIENT.recv(1024)
+
+    msg = "end"
+    CLIENT.send(msg.encode(FORMAT))
 def confirmAcc():
+    # gui option login
+    option='LOGIN'
+    CLIENT.send(option.encode(FORMAT))
     global user_log
     global password_log
-    user_log=username_box_log.get("1.0", END).strip('\n')
-    print("tên dang nhập" + user_log)
-    password_log=password_box_log.get("1.0", END).strip('\n')
-    print("pass dang nhập" +password_log)
-    with open('D:/Destop/testing_python/server/infoclient.json', 'r', encoding='utf8') as f:
-        data=json.load(f)
-        print(data)
-    f.close()
-    accounts=data['account']
-
-    for i in range (0, len(accounts)):
-        if accounts[i]["username"]==user_log and accounts[i]["password"]==password_log:
-            MainSearch()
-            return
+    user_log=username_box_log.get()
+    password_log=password_box_log.get()
+    # Sever check account
+    account=[user_log,password_log]
+    sendList(account)
+    check=CLIENT.recv(BUFSIZE).decode(FORMAT)
+    print(check)
+    if check=='accepted':
+        MainSearch()
+        return
+    
     onErrorLogIn()
 
 
@@ -319,3 +332,4 @@ __init__()
 # saveNewAcc()
 my_window.mainloop()
 
+CLIENT.close()
