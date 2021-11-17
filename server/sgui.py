@@ -84,9 +84,28 @@ def pageOne():
     with open('D:/Destop/testing_python/server/infoclient.json', 'r') as f:
         data=json.load(f)
         f.close()
+    main_frame=Frame(pop)
+    main_frame.pack(fill=BOTH,expand=1)
+    my_canvas=Canvas(main_frame)
+    my_canvas.pack(side=LEFT, fill=BOTH,expand=1)
+    my_scrollbar=ttk.Scrollbar(main_frame, orient=VERTICAL,command=my_canvas.yview)
+    my_scrollbar.pack(side=RIGHT, fill=Y)
+    my_canvas.configure(yscrollcommand=my_scrollbar.set)
+    my_canvas.bind('<Configure>', lambda e:my_canvas.configure(scrollregion=my_canvas.bbox("all")))
+    second_frame=Frame(my_canvas)
+    my_canvas.create_window((0,0), window=second_frame, anchor="nw")
+
     accounts=data['account']
-    lbl=Label(pop,text='Hien co ' + str(len(accounts)) + ' tai khoan da dang ki').pack()
-    printAccount1(accounts)
+    lbl=Label(second_frame,text='Hien co ' + str(len(accounts)) + ' tai khoan da dang ki').grid(column=1, row=0)
+    # printAccount1(accounts)
+    n=1
+    for i in range(0, len(accounts)):
+        x=accounts[i]
+        print(x['username'] + '   '+ x['password'])
+        Label(second_frame, text=n, width=5).grid(column=0, row=n)
+        Label(second_frame, text=x['username'], width=15).grid(column=1, row=n)
+        Label(second_frame, text=x['password'],width=15).grid(column=2, row=n)
+        n=n+1
 
 def pageTwo():
     global pop1
@@ -95,15 +114,37 @@ def pageTwo():
     # scroll.pack( side = RIGHT, fill = Y )
     pop1.geometry("400x500")
     pop1.title('Danh sach tai khoan')
+    lbl=Label(pop1, text='TOTAL ACCOUNTS ONLINE NOW')
+    lbl.pack()
     # lbl.config(font=("Humblle Rought All Caps",30))
     with open('D:/Destop/testing_python/server/onlinelist.json', 'r') as f:
         data=json.load(f)
         f.close()
         print(data)
+
+    main_frame=Frame(pop1)
+    main_frame.pack(fill=BOTH,expand=1)
+    my_canvas=Canvas(main_frame)
+    my_canvas.pack(side=LEFT, fill=BOTH,expand=1)
+    my_scrollbar=ttk.Scrollbar(main_frame, orient=VERTICAL,command=my_canvas.yview)
+    my_scrollbar.pack(side=RIGHT, fill=Y)
+    my_canvas.configure(yscrollcommand=my_scrollbar.set)
+    my_canvas.bind('<Configure>', lambda e:my_canvas.configure(scrollregion=my_canvas.bbox("all")))
+    second_frame=Frame(my_canvas)
+    my_canvas.create_window((0,0), window=second_frame, anchor="nw")
     accounts=data['account']
-    lbl=Label(pop1, text='TOTAL ACCOUNTS ONLINE NOW')
-    lbl.pack(padx=50, pady=10)
-    printAccount2(accounts)
+
+    n=1
+    for i in range(0, len(accounts)):
+        x=accounts[i]
+        print(x['username'] + '   '+ x['password'])
+
+        Label(second_frame, text=n, width=5).grid(column=0, row=n)
+        Label(second_frame, text=x['username'], width=15).grid(column=1, row=n)
+
+        Label(second_frame, text=x['password'], width=15).grid(column=2, row=n)
+        n=n+1
+
 
 def pageThree():
     global pop2
@@ -124,7 +165,6 @@ def pageThree():
     my_canvas=Canvas(main_frame)
     my_canvas.pack(side=LEFT, fill=BOTH,expand=1)
     my_scrollbar=ttk.Scrollbar(main_frame, orient=VERTICAL,command=my_canvas.yview)
-    print(123)
     my_scrollbar.pack(side=RIGHT, fill=Y)
     my_canvas.configure(yscrollcommand=my_scrollbar.set)
     my_canvas.bind('<Configure>', lambda e:my_canvas.configure(scrollregion=my_canvas.bbox("all")))
@@ -149,5 +189,3 @@ def pageThree():
         n=n+1
 
 __init__(my_window)
-
-# pageOne()

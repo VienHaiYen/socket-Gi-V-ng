@@ -1,54 +1,27 @@
-'''
-
-# Import required libraries
+import tkinter as tk
 from tkinter import *
-from tkinter import ttk
-
-# Create an instance of tkinter frame
-win = Tk()
-
-# Set the window size
-win.geometry("700x350")
-style = ttk.Style()
-style.theme_use('clam')
-
-# Define a function to implement choice function
-def choice(option):
-   pop.destroy()
-   if option == "yes":
-      label.config(text="Hello, How are You?")
-   else:
-      label.config(text="You have selected No")
-      win.destroy()
-def click_fun():
-   global pop
-   pop = Toplevel(win)
-   pop.title("Confirmation")
-   pop.geometry("300x150")
-   pop.config(bg="white")
-   # Create a Label Text
-   label = Label(pop, text="Would You like to Proceed?",
-   font=('Aerial', 12))
-   label.pack(pady=20)
-   # Add a Frame
-   frame = Frame(pop, bg="gray71")
-   frame.pack(pady=10)
-   # Add Button for making selection
-   button1 = Button(frame, text="Yes", command=lambda: choice("yes"), bg="blue", fg="white")
-   button1.grid(row=0, column=1)
-   button2 = Button(frame, text="No", command=lambda: choice("no"), bg="blue", fg="white")
-   button2.grid(row=0, column=2)
-# Create a Label widget
-label = Label(win, text="", font=('Aerial', 14))
-label.pack(pady=40)
-
-# Create a Tkinter button
-ttk.Button(win, text="Click Here", command=click_fun).pack()
-
-win.mainloop()
-'''
-import json
-with open('myfile.json', 'r') as f3:
-        data3=json.load(f3)
-        f3.close()
-print(data3)
+root = tk.Tk()
+ 
+frame = Frame(root)
+frame.pack(side="top", expand=True, fill="both")
+ 
+lab = Label(frame, text="hiiii")
+lab.grid(row=0, column=0, padx=10, pady=5)
+ 
+def clearFrame():
+    # destroy all widgets from frame
+    for widget in frame.winfo_children():
+       widget.destroy()
+    Label(frame, text="còn nha mài").pack()
+    # this will clear frame and frame will be empty
+    # if you want to hide the empty panel then
+   #  frame.pack_forget()
+ 
+frame.but = Button(frame, text="clear frame", command=clearFrame)
+frame.but.grid(row=0, column=1, padx=10, pady=5)
+ 
+# then whenever you add data in frame then you can show that frame
+lab2 = Label(frame, text="hiiii")
+lab2.grid(row=1, column=0, padx=10, pady=5)
+frame.pack()
+root.mainloop()
