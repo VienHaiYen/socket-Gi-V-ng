@@ -132,7 +132,8 @@ def pageThree():
     pop2=Toplevel()
     pop2.geometry("700x500")
     pop2.title('Toan bo du lieu')
-    Label(pop2, text="BẢNG GIÁ VÀNG",font=("iCiel Pacifico",15)).pack()
+    pop2.configure(bg="#fff")
+    Label(pop2, text="BẢNG GIÁ VÀNG",font=("iCiel Pacifico",15),bg="#fff").pack()
     with open('myfile.json', 'r', encoding='utf-8') as f:
         data=json.load(f)
         f.close()
@@ -144,33 +145,35 @@ def pageThree():
     main_frame.pack(fill=BOTH,expand=1)
     my_canvas=Canvas(main_frame)
     my_canvas.pack(side=LEFT, fill=BOTH,expand=1)
+    my_canvas.configure(bg="#fff")
     my_scrollbar=ttk.Scrollbar(main_frame, orient=VERTICAL,command=my_canvas.yview)
     my_scrollbar.pack(side=RIGHT, fill=Y)
     my_canvas.configure(yscrollcommand=my_scrollbar.set)
     my_canvas.bind('<Configure>', lambda e:my_canvas.configure(scrollregion=my_canvas.bbox("all")))
     second_frame=Frame(my_canvas)
+    second_frame.configure(bg="#fff")
     my_canvas.create_window((0,0), window=second_frame, anchor="nw")
-    Label(second_frame, text="Company").grid(column=1,row=0)
-    Label(second_frame, text="Brand").grid(column=2,row=0)
+    Label(second_frame, text="Company",bg="#fff").grid(column=1,row=0)
+    Label(second_frame, text="Brand",bg="#fff").grid(column=2,row=0)
 
-    Label(second_frame, text="Brand1").grid(column=3,row=0)
-    Label(second_frame, text="Type").grid(column=4,row=0)
+    Label(second_frame, text="Brand1",bg="#fff").grid(column=3,row=0)
+    Label(second_frame, text="Type",bg="#fff").grid(column=4,row=0)
 
-    Label(second_frame, text="Buy").grid(column=5,row=0)
-    Label(second_frame, text="Sell").grid(column=7,row=0)
+    Label(second_frame, text="Buy",bg="#fff").grid(column=5,row=0)
+    Label(second_frame, text="Sell",bg="#fff").grid(column=7,row=0)
 
     for i in range(0, len(value)):
         print(value[i])
-        Label(second_frame,text=n).grid(column=0,row=n)
-        Label(second_frame, text=value[i]['company']).grid(column=1,row=n)
-        Label(second_frame, text=value[i]['brand']).grid(column=2,row=n)
+        Label(second_frame,text=n,bg="#fff").grid(column=0,row=n)
+        Label(second_frame, text=value[i]['company'],bg="#fff").grid(column=1,row=n)
+        Label(second_frame, text=value[i]['brand'],bg="#fff").grid(column=2,row=n)
 
-        Label(second_frame, text=value[i]['brand1']).grid(column=3,row=n)
-        Label(second_frame, text=value[i]['type']).grid(column=4,row=n)
+        Label(second_frame, text=value[i]['brand1'],bg="#fff").grid(column=3,row=n)
+        Label(second_frame, text=value[i]['type'],bg="#fff").grid(column=4,row=n)
 
-        Label(second_frame, text=value[i]['buy']).grid(column=5,row=n)
-        Label(second_frame, text="      ").grid(column=6,row=n)
-        Label(second_frame, text=value[i]['sell']).grid(column=7,row=n)
+        Label(second_frame, text=value[i]['buy'],bg="#fff").grid(column=5,row=n)
+        Label(second_frame, text="      ",bg="#fff").grid(column=6,row=n)
+        Label(second_frame, text=value[i]['sell'],bg="#fff").grid(column=7,row=n)
 
         n=n+1
 

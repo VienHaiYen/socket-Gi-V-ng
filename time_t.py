@@ -4,9 +4,7 @@ import tkinter
 from PIL import Image, ImageTk
 from tkinter import scrolledtext
 import json
-
 import tkinter.messagebox as mbox
-
 import re
 
 

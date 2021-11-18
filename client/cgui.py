@@ -241,7 +241,7 @@ def onErrorLogIn():
     mbox.showerror("Error", "Sai thông tin đăng nhập, vui lòng thử lại")
 
 def successfullSignIn():
-    mbox.showerror("Infomation", "Tạo tài khoản thành công, vui lòng thoát ra và đăng nhập lại")
+    mbox.showìno("Infomation", "Tạo tài khoản thành công, vui lòng thoát ra và đăng nhập lại")
 
 def saveNewAcc():
     global user_sign
