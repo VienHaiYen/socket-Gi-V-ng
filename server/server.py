@@ -13,12 +13,10 @@ def recvList(conn):
     item = conn.recv(1024).decode(FORMAT)
 
     while (item != "end"):
-        
         list.append(item)
         #response
         conn.sendall(item.encode(FORMAT))
         item = conn.recv(1024).decode(FORMAT)
-    
     return list
 def check(account):
     f=open('infoclient.json','r')
