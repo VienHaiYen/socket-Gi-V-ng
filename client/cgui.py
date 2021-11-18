@@ -4,17 +4,18 @@ import tkinter
 from PIL import Image, ImageTk
 from tkinter import scrolledtext
 import json
-
 import tkinter.messagebox as mbox
-
 import re
-
-
 
 
 my_window =Tk()
 my_window.title('Client Version')
 my_window.geometry("400x350")
+
+load=Image.open('white.jpg')
+render=ImageTk.PhotoImage(load)
+img=Label(my_window, image=render)
+img.place(x=0, y=0)
 
 def outputResult(result):
     print(123445)
@@ -28,7 +29,7 @@ def outputResult(result):
     global my_scrollbar
     my_scrollbar=ttk.Scrollbar(main_frame, orient=VERTICAL,command=my_canvas.yview)
     my_scrollbar.pack(side=RIGHT, fill=Y)
-    my_canvas.configure(yscrollcommand=my_scrollbar.set, width=700, height=100)
+    my_canvas.configure(yscrollcommand=my_scrollbar.set, width=750, height=100)
     my_canvas.bind('<Configure>', lambda e:my_canvas.configure(scrollregion=my_canvas.bbox("all")))
     global second_frame
     second_frame=Frame(my_canvas)
@@ -36,9 +37,9 @@ def outputResult(result):
 
     global outFrame
     outFrame=Frame(second_frame)
-    Label(outFrame,text="           ").grid(column=0,row=1)
+    Label(outFrame,text="        ").grid(column=0,row=1)
     n=1
-    Label(outFrame,text="Brand", width=15).grid(column=1,row=n)
+    Label(outFrame,text="Brand", width=10).grid(column=1,row=n)
     Label(outFrame,text="Company", width=10).grid(column=2,row=n)
     Label(outFrame,text="Brand1", width=10).grid(column=3,row=n)
     Label(outFrame,text="Type", width=30).grid(column=4,row=n)
@@ -47,8 +48,8 @@ def outputResult(result):
     outFrame.pack(fill=BOTH)
     for i in range (0,len(result)):
         n=n+1
-        Label(outFrame, text='   '+result[i]['brand']+'   ').grid(column=1,row=n)
-        Label(outFrame, text='   '+result[i]['company']+'   ').grid(column=2,row=n)
+        Label(outFrame, text=' '+result[i]['brand']+' ').grid(column=1,row=n)
+        Label(outFrame, text='  '+result[i]['company']+' ').grid(column=2,row=n)
         Label(outFrame, text='   '+result[i]['brand1']+'   ').grid(column=3,row=n)
         Label(outFrame, text='   '+result[i]['type']+'   ').grid(column=4,row=n)
         Label(outFrame, text='   '+result[i]['buy']+'   ').grid(column=5,row=n)
@@ -77,19 +78,21 @@ def findInfo(INPUT1, INPUT2, value):
     if len(result)==0:
         print('Nothing has this brand')
         noti_box=Toplevel()
-        noti_box.geometry("400x70")
-        noti=Label(noti_box, text="*Error: Nothing has this Brand=\" " + a+ '\" Company=\"'+b+" \"", fg="red", font=("Arial",10, "bold")).pack(expand=True)
+        noti_box.geometry("300x70")
+        # noti=Label(noti_box, text="Error: Nothing has this Brand=\" " + a+ '\" Company=\"'+b+" \"", fg="red", font=("Arial",10, "bold")).pack(expand=True)
+        noti=Label(noti_box, text="Cannot find you request!!").pack(expand=True)
     else:
         title=Label(second_big_frame, text="Kết quả trả về cho Brand=\"" + a+ '\" Company=\"'+b+" \"", font=("Arial",10,"bold"), fg="#006699").pack()
         outputResult(result)
 
 def __init__():
+
     frame=Frame(my_window)
-    frame.pack(fill=BOTH)
-    Label(frame, text="Hi Client !!!",font=("Times New Roman",30) ).pack(pady=30)
-    signin=Button(frame,text="Đăng kí", width=20,command=sigIn).pack(padx=20, pady=10)
+    frame.pack()
+    Label(frame, text="Hi Client",font=("Humblle Rought All Caps",30) ).pack(pady=30)
+    signin=Button(frame,text="Đăng ký", width=25,command=sigIn,fg="#fff", bg="#333",font=(".VnSouthern",12, "bold")).pack(padx=20, pady=10)
     # login=Button(frame,text="Đăng nhập",width=20, command=MainSearch).pack(padx=20, pady=10)
-    login=Button(frame,text="Đăng nhập",width=20, command=logIn).pack(padx=20, pady=10)
+    login=Button(frame,text="Đăng nhập",width=25, command=logIn,fg="#fff", bg="#333",font=(".VnSouthern",12, "bold")).pack(padx=20, pady=10)
 
 def clearFrame():
     # destroy all widgets from frame
@@ -144,7 +147,7 @@ def transfer():
 def MainSearch():
     global search_page
     search_page=Toplevel()
-    search_page.geometry("750x700")
+    search_page.geometry("800x700")
     search_page.title('ăn ở do trời')
     Label(search_page, text="Bạn đang đăng nhập bằng tài khoản "+ user_log, font=("ROBOTO", 13), fg="red").pack()
     global brand_box
@@ -223,6 +226,9 @@ def onErrorLogIn():
 
 def successfullSignIn():
     mbox.showerror("Infomation", "Tạo tài khoản thành công, vui lòng thoát ra và đăng nhập lại")
+
+def errorFinding():
+    mbox.showerror("Error", "Không tìm được từ khóa")
 
 def saveNewAcc():
     global user_sign

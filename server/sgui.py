@@ -11,26 +11,26 @@ my_window.geometry("400x350")
 
 def __init__(my_window):
 
-    load=Image.open('background4.jpeg')
-    render=ImageTk.PhotoImage(load)
-    img=Label(my_window, image=render)
-    img.place(x=0, y=0)
+    # load=Image.open('xxx.jpg')
+    # render=ImageTk.PhotoImage(load)
+    # img=Label(my_window, image=render)
+    # img.place(x=0, y=0)
 
-    welcomeBoss = Label(my_window, text="Hello server", bg="#ADD9E6")
+    welcomeBoss = Label(my_window, text="Hello server", bg="#D2F7E5")
     welcomeBoss.config(font=("Humblle Rought All Caps",30))
     welcomeBoss.pack(pady=20)
 
-    clientsList=Button(my_window, text='Clients\' Information', width=30, height=2, background='#FFA07A', fg="#333", command=pageOne)
+    clientsList=Button(my_window, text='Clients\' Information', width=30, height=2, background='#EBC4C9', fg="#000", command=pageOne)
     clientsList.pack(pady=5)
     clientsList.config(font=(".VnSouthern",10, "bold"))
 
-    onlineClient=Button(my_window, text='Accounts online now',width=30, height=2, background='#FFA07A', fg="#333", command=pageTwo)
+    onlineClient=Button(my_window, text='Accounts online now',width=30, height=2, background='#EBC4C9', fg="#000", command=pageTwo)
     # onlineClient.grid(column=0, row=2)
     onlineClient.pack(pady=5)
     onlineClient.config(font=(".VnSouthern",10, "bold"))
 
 
-    dataInserver=Button(my_window, text='Data about gold',width=30, height=2,background='#FFA07A', fg="#333",command=pageThree)
+    dataInserver=Button(my_window, text='Data about gold',width=30, height=2,background='#EBC4C9', fg="#000",command=pageThree)
     # dataInserver.grid(column=0, row=3)
     dataInserver.pack(padx=20, pady=3)
     dataInserver.config(font=(".VnSouthern",10, "bold"))
