@@ -12,10 +12,10 @@ my_window =Tk()
 my_window.title('Client Version')
 my_window.geometry("400x350")
 
-load=Image.open('white.jpg')
-render=ImageTk.PhotoImage(load)
-img=Label(my_window, image=render)
-img.place(x=0, y=0)
+# load=Image.open('white.jpg')
+# render=ImageTk.PhotoImage(load)
+# img=Label(my_window, image=render)
+# img.place(x=0, y=0)
 
 def outputResult(result):
     print(123445)
