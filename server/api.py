@@ -1,3 +1,4 @@
+from typing import Text
 import requests, json
 from datetime import datetime
 
@@ -5,91 +6,46 @@ from threading import Thread
 import threading
 import time
 
+from requests.models import ChunkedEncodingError, stream_decode_response_unicode
+from requests.sessions import merge_setting
 
-def setInterval(func,time):
+
+# hàm dùng để set thời gian thực hiện hàm func sau khoảng thời gian time (lấy từ mạng xuống)
+def setInterval(func,time=1800):
     e = threading.Event()
-    while not e.wait(time):
-        func()
+    if time != 1800:
+        if not e.wait(time):
+            func()
+    else:
+        while not e.wait(time):
+            func()
+# khác với những API ở bài khác, nài mình có thể lấy dữ liệu về, có thể print ra nhưng k thể chuyển về python object được, lí do thì k biết
+#các hàm để dùng để lấy api và chuyển api
 
 def reachAPI():
     now = datetime.now()
-    print("now =", now)
-    print('Cap nhat API thanh cong\n')
     api_link="https://tygia.com/json.php?ran=0&rate=0&gold=1&bank=VIETCOM&date=now"
-    api_link2="https://api.covid19api.com/summary"
-    api_info = requests.get(api_link).text
-
-
-    # print(type(api_info))
-    data = json.dumps(api_info)
-
-    a='"\\ufeff\n'
-    data2 = data.lstrip(a)
-
-    a='n'
-    data3 ='\"'+ data2.lstrip(a)
-
-    a=data3.split(',\\"time\\"')
-
-    info=a[0]+'\"'
-
-    result=json.loads(info) +'}'
-
-    f=open('myfile.json','w+', encoding='UTF-8')
-    f.write(result)
+    res = requests.get(api_link).text
+    res=res[2:]
+    data=json.loads(res)
+    data['last']=str(now)
+    f=open('test_api.json','w')
+    f.write(json.dumps(data))
     f.close()
+    print("Updated")
 
-    with open("myfile.json", "r", encoding='utf-8') as fin:
+
+def start_api():
+    with open("test_api.json", "r", encoding='utf-8') as fin: #đọc myfile.json
         data = json.load(fin)
         fin.close()
-    # print(type(data))
-    x= data['golds']
-    # print(type(x))
-
-    x1=x[0]
-    # print(type(x1))
-
-    value=x1['value']
-    # print(type(value))
-    # print(value)
-    return value
-
-def startFetchAPI():
-    setInterval(reachAPI,600)
-
-def outputResult(result):
-    print('Gia mua vao: '+result["buy"])
-    print('Gia ban ra: '+result["sell"]+'\n\n')
-
-def findInfo(value):
-    result=-1
-    print('Input your gold brand')
-    temp1=input()
-    print('Input your gold company')
-    temp2=input()
-    for i in range(0, len(value)):
-        if value[i]["brand"].lower() == temp1.lower() and value[i]["company"].lower() == temp2.lower():
-            result = i
-            break
-    if result==-1:
-        print('Nothing has this brand')
+    data=datetime.fromisoformat(data["last"])
+    now = datetime.now()
+    countdown=now-data
+    if countdown.seconds > 1800:
+        reachAPI()
     else:
-        outputResult(value[result])
-
-
-def searching():
-    while True:
-        findInfo(value)
-
-
-value=reachAPI()
-
-try:
-    t1=threading.Thread(target=searching)
-    t2=threading.Thread(target=startFetchAPI)
-    t1.start()
-    t2.start()
-    t1.join()
-    t2.join()
-except:
-    print('error')
+        setInterval(reachAPI,1800-countdown.seconds)
+    setInterval(reachAPI)
+start_api()
+print("end")

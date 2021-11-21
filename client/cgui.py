@@ -1,16 +1,15 @@
-from io import BufferedReader
+
 from socket import AF_INET,socket,SOCK_STREAM
-import string
-from threading import Thread
+
 from tkinter import *
 from tkinter import ttk
-import tkinter
-from urllib.request import DataHandler
-from PIL import Image, ImageTk
+
+
+
 from tkinter import scrolledtext
 import json
 import tkinter.messagebox as mbox
-import re
+
 
 
 HOST='127.0.0.1'
@@ -363,6 +362,8 @@ def on_closing(event=None):
     try:
         CLIENT.send(bytes(msg.encode(FORMAT)))
         CLIENT.close()
+    except ConnectionResetError:
+        pass
     finally:
         my_window.quit()
 my_window.protocol("WM_DELETE_WINDOW", on_closing)
