@@ -454,3 +454,4 @@ my_window.protocol("WM_DELETE_WINDOW", on_closing)
 
 my_window.mainloop()
 CLIENT.close()
+#dòng close này mới thêm
