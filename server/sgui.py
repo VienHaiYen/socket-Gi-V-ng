@@ -12,7 +12,6 @@ my_window.geometry("550x350")
 
 
 def __init__(my_window):
-
     load=Image.open('marketing.jpg')
     render=ImageTk.PhotoImage(load)
     img=Label(my_window, image=render)
@@ -21,9 +20,11 @@ def __init__(my_window):
     welcomeBoss = Label(my_window, text="Hello server", bg="#F4F8FB")
     welcomeBoss.config(font=("Humblle Rought All Caps",30))
     welcomeBoss.place(x=180,y=50)
+
     btn_start_frame=Frame(my_window)
     btn_start_frame.configure(bg="#fff", width=10)
     btn_start_frame.place(x=160,y=140)
+
     clientsList=Button(btn_start_frame, text='Clients\' Information', width=25, height=1, background='#7FBDEA', fg="#fff", command=pageOne)
     clientsList.pack(pady=5)
     clientsList.config(font=(".VnSouthern",10, "bold"))

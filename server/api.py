@@ -1,3 +1,4 @@
+from typing import Text
 import requests, json
 from datetime import datetime
 
@@ -5,6 +6,8 @@ from threading import Thread
 import threading
 import time
 
+from requests.models import ChunkedEncodingError, stream_decode_response_unicode
+from requests.sessions import merge_setting
 
 # hàm dùng để set thời gian thực hiện hàm func sau khoảng thời gian time (lấy từ mạng xuống)
 def setInterval(func,time):
@@ -26,10 +29,21 @@ JSON là file dùng để lưu trữ dữ liệu dưới dạng chuỗi "<key>":
 muốn dùng thì thêm vào thư viện resquest và json
 '''
 
+
+# hàm dùng để set thời gian thực hiện hàm func sau khoảng thời gian time (lấy từ mạng xuống)
+def setInterval(func,time=1800):
+    e = threading.Event()
+    if time != 1800:
+        if not e.wait(time):
+            func()
+    else:
+        while not e.wait(time):
+            func()
+# khác với những API ở bài khác, nài mình có thể lấy dữ liệu về, có thể print ra nhưng k thể chuyển về python object được, lí do thì k biết
+#các hàm để dùng để lấy api và chuyển api
+
 def reachAPI():
     now = datetime.now()
-    print("now =", now)
-    print('Cap nhat API thanh cong\n')
     api_link="https://tygia.com/json.php?ran=0&rate=0&gold=1&bank=VIETCOM&date=now"
     api_link2="https://api.covid19api.com/summary"
     api_info = requests.get(api_link).text
@@ -56,7 +70,15 @@ def reachAPI():
 
     f=open('myfile.json','w+', encoding='UTF-8') # viết vào myfile.json
     f.write(result)
+    res = requests.get(api_link).text
+    res=res[2:]
+    data=json.loads(res)
+    data['last']=str(now)
+    f=open('test_api.json','w')
+    f.write(json.dumps(data))
     f.close()
+    print("Updated")
+
 
     with open("myfile.json", "r", encoding='utf-8') as fin: #đọc myfile.json
         data = json.load(fin)
@@ -116,3 +138,17 @@ try:
     t2.join()
 except:
     print('error')
+def start_api():
+    with open("test_api.json", "r", encoding='utf-8') as fin: #đọc myfile.json
+        data = json.load(fin)
+        fin.close()
+    data=datetime.fromisoformat(data["last"])
+    now = datetime.now()
+    countdown=now-data
+    if countdown.seconds > 1800:
+        reachAPI()
+    else:
+        setInterval(reachAPI,1800-countdown.seconds)
+    setInterval(reachAPI)
+start_api()
+print("end")
