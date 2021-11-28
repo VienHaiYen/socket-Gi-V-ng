@@ -37,7 +37,7 @@ def outputResult(result):
     global my_scrollbar
     my_scrollbar=ttk.Scrollbar(main_frame, orient=VERTICAL,command=my_canvas.yview)
     my_scrollbar.pack(side=RIGHT, fill=Y)
-    my_canvas.configure(yscrollcommand=my_scrollbar.set, width=700, height=200)
+    my_canvas.configure(yscrollcommand=my_scrollbar.set, width=730, height=200)
     my_canvas.bind('<Configure>', lambda e:my_canvas.configure(scrollregion=my_canvas.bbox("all")))
     global second_frame
     second_frame=Frame(my_canvas)
@@ -45,7 +45,7 @@ def outputResult(result):
 
     global outFrame
     outFrame=Frame(second_frame)
-    Label(outFrame,text="           ").grid(column=0,row=1)
+    # Label(outFrame,text="      ").grid(column=0,row=1)
     n=1
     Label(outFrame,text="Brand", width=15).grid(column=1,row=n)
     Label(outFrame,text="Company", width=10).grid(column=2,row=n)
@@ -71,14 +71,14 @@ def recvResult(conn):
         response=response+conn.recv(BUFSIZE).decode(FORMAT)
     list=json.loads(response)
     return list
-
+'''
 def findInfo(INPUT1, INPUT2, value):
     result=[]
 
     a=INPUT1.strip("\n")
     b=INPUT2.strip("\n")
     print(len(value))
-    
+
     print(result)
     print(len(result))
     if len(result)==0:
@@ -89,7 +89,7 @@ def findInfo(INPUT1, INPUT2, value):
     else:
         title=Label(second_big_frame, text="Kết quả trả về cho Brand=\"" + a+ '\" Company=\"'+b+" \"", font=("Arial",10,"bold"), fg="#006699").pack()
         outputResult(result)
-
+'''
 def startPage():
     star_page=Frame(frame)
     star_page.configure(bg="#fff")
@@ -155,21 +155,33 @@ def transfer():
     sendList(searchkey)
     result=recvResult(CLIENT)
     if len(result)==0:
-        print('Nothing has this brand')
-        noti_box=Toplevel()
-        noti_box.geometry("400x70")
-        Label(noti_box, text="*Error: Nothing has this Brand=\" " + INPUT1+ '\" Company=\"'+INPUT2+" \"", fg="red", font=("Arial",10, "bold")).pack(expand=True)
+        onErrorSearching()
     else:
         Label(second_big_frame, text="Kết quả trả về cho Brand=\"" + INPUT1+ '\" Company=\"'+INPUT2+"\"", font=("Arial",10,"bold"), fg="#006699").pack()
         outputResult(result)
 
 def MainSearch():
     search_page=Frame(frame)
-    # search_page.configure(bg="#ccc")
-    my_window.geometry("750x700")
+    search_page.configure(bg="#fff")
+    my_window.geometry("780x700")
     my_window.title('Tim kiem Vang')
 
-    Label(search_page, text="TÌM KIẾM GIÁ VÀNG", font=("iCiel Rukola", 15,"bold"), fg="red").place(x=0, y=50)
+
+    tempIMG=(Image.open("square.png"))
+    startImg=tempIMG.resize((500,300),Image.ANTIALIAS)
+    new_image= ImageTk.PhotoImage(startImg)
+    # photo = PhotoImage(file="login.png")
+    label = Label(search_page, image=new_image)
+    label.image = new_image
+    label.place(x=0, y=0)
+
+    label2 = Label(search_page, image=new_image)
+    label2.image = new_image
+    label2.place(x=500, y=0)
+
+    label3 = Label(search_page, image=new_image)
+    label3.image = new_image
+    label3.place(x=1000, y=0)
 
     tempIMG=(Image.open("user.png"))
     startImg=tempIMG.resize((50,50),Image.ANTIALIAS)
@@ -177,6 +189,10 @@ def MainSearch():
     label = Label(search_page, image=new_image)
     label.image = new_image
     label.place(x=0, y=0)
+
+    Label(search_page, text="TÌM KIẾM GIÁ VÀNG", font=("iCiel Rukola", 15,"bold"), fg="red").place(x=0, y=50)
+
+
     Label(search_page, text="Name: "+ user_log, font=("ROBOTO", 12), fg="#292F34").place(x=60, y=15)
     Label(text="", font=("ROBOTO",10)).pack()
     input_bar=Frame(search_page)
@@ -193,9 +209,14 @@ def MainSearch():
 
     btn_frame=Frame(input_bar)
     btn_frame.pack(pady=10)
-    Button(btn_frame, text="SUBMIT", command=transfer,bg="#333", fg="#fff").grid(column=1, row=1)
+    submitbtn=Button(btn_frame, text="SUBMIT", command=transfer,bg="#333", fg="#fff")
+    submitbtn.grid(column=1, row=1)
+    changeOnHoverButton(submitbtn)
     Label(btn_frame,text="   ").grid(column=2, row=1)
-    Button(btn_frame, text="Clear all Resuls", command=clearFrame,bg="#333",fg="#fff").grid(column=3, row=1)
+    clearbtn=Button(btn_frame, text="Clear all Resuls", command=clearFrame,bg="#333",fg="#fff")
+    clearbtn.grid(column=3, row=1)
+    changeOnHoverButton(clearbtn)
+
 
     search_page.grid(row=0,column=0,sticky='nsew')
     search_page.tkraise()
@@ -209,13 +230,13 @@ def MainSearch():
     global main_big_frame
     main_big_frame=Frame(total_frame)
     main_big_frame.pack(fill=BOTH,expand=1)
-
     Label(main_big_frame, text="đây là total")
-
 
     global my_big_canvas
     my_big_canvas=Canvas(main_big_frame)
-    my_big_canvas.pack(side=LEFT, fill=BOTH,expand=1)
+    # my_big_canvas.configure(bg="red")
+
+    my_big_canvas.pack(side=RIGHT, fill=BOTH,expand=1)
     global my_big_scrollbar
     my_big_scrollbar=ttk.Scrollbar(main_big_frame, orient=VERTICAL,command=my_big_canvas.yview)
     my_big_scrollbar.pack(side=RIGHT, fill=Y)
@@ -272,6 +293,9 @@ def sigIn():
 
 def onErrorSignIn():
     mbox.showerror("Error", "Tên tài khoản đã được sử dụng, vui lòng thử lại")
+
+def onErrorSearching():
+    mbox.showerror("Error", "Không tìm thấy kết quả, vui lòng thử lại")
 
 def onErrorLogIn():
     mbox.showerror("Error", "Sai thông tin đăng nhập, vui lòng thử lại")
@@ -336,7 +360,7 @@ def recvDict(client):
 
     return dict
 
-def sendList( list):
+def sendList(list):
     for item in list:
         CLIENT.sendall(item.encode(FORMAT))
         #wait response
@@ -365,7 +389,7 @@ def onErrorLostConnection():
     mbox.showerror("Error", "Sever đã đóng!")
 
 
-# MainSearch()
+
 def quit():
     while True:
         try:
@@ -413,8 +437,11 @@ CLIENT=socket(AF_INET,SOCK_STREAM)
 def catchHost():
     ip=ipHost_box.get()
     port=portHost_box.get()
+    print(ip)
+    print(port)
+    port=int(port)
     try:
-        CLIENT.connect((HOST,PORT))
+        CLIENT.connect((ip,port))
         __init__()
     except:
         print("Server is not responding")
@@ -450,7 +477,8 @@ def entryHost():
 
 entryHost()
 
+
+# MainSearch()
 my_window.protocol("WM_DELETE_WINDOW", on_closing)
 
 my_window.mainloop()
-CLIENT.close()

@@ -47,10 +47,9 @@ def start_api():
     setInterval(reachAPI)
 
 
-# GUI Sever
+# GUI Sever - sử dụng tkinter
 my_window =Tk()
 my_window.title('Server Version')
-# my_window.geometry("400x350")
 my_window.geometry("550x350")
 
 load=Image.open('marketing.jpg')
@@ -60,7 +59,6 @@ img.place(x=0, y=-50)
 
 
 def __init__(my_window):
-
     welcomeBoss = Label(my_window, text="Hello server", bg="#F4F8FB")
     welcomeBoss.config(font=("Humblle Rought All Caps",30))
     welcomeBoss.place(x=180,y=50)
@@ -74,70 +72,15 @@ def __init__(my_window):
     clientsList.config(font=(".VnSouthern",10, "bold"))
 
     onlineClient=Button(btn_start_frame, text='Accounts online now',width=25, height=1, background='#7FBDEA', fg="#fff", command=pageTwo)
-    # onlineClient.grid(column=0, row=2)
     onlineClient.pack(pady=5)
     onlineClient.config(font=(".VnSouthern",10, "bold"))
 
 
     dataInserver=Button(btn_start_frame, text='Data about gold',width=25, height=1,background='#7FBDEA', fg="#fff",command=pageThree)
-    # dataInserver.grid(column=0, row=3)
     dataInserver.pack(padx=20, pady=3)
     dataInserver.config(font=(".VnSouthern",10, "bold"))
 
-'''
-def printAccount1(accounts):
-    main_frame=Frame(pop)
-    main_frame.pack(fill=BOTH,expand=1)
-    my_canvas=Canvas(main_frame)
-    my_canvas.pack(side=LEFT, fill=BOTH,expand=1)
-    my_scrollbar=ttk.Scrollbar(main_frame, orient=VERTICAL,command=my_canvas.yview)
-    my_scrollbar.pack(side=RIGHT, fill=Y)
-    my_canvas.configure(yscrollcommand=my_scrollbar.set)
-    my_canvas.bind('<Configure>', lambda e:my_canvas.configure(scrollregion=my_canvas.bbox("all")))
-    second_frame=Frame(my_canvas)
-    my_canvas.create_window((0,0), window=second_frame, anchor="nw")
-    second_frame.configure(border=True ,highlightbackground="black",highlightthickness=1,width=300)
-    second_frame.place(x=60,y=15)
 
-    n=1
-    for i in range(0, len(accounts)):
-        x=accounts[i]
-        print(x['username'] + '   '+ x['password'])
-        num=Label(second_frame, text=n, width=5)
-        num.grid(column=1, row=n)
-        n1=Label(second_frame, text=x['username'], width=15)
-        n1.grid(column=2, row=n)
-        # n1.pack()
-        n2=Label(second_frame, text=x['password'],width=15)
-        n2.grid(column=3, row=n)
-        n=n+1
-
-def printAccount2(accounts):
-    n=1
-    main_frame=Frame(pop1)
-    main_frame.pack(fill=BOTH,expand=1)
-    my_canvas=Canvas(main_frame)
-    my_canvas.pack(side=LEFT, fill=BOTH,expand=1)
-    my_scrollbar=ttk.Scrollbar(main_frame, orient=VERTICAL,command=my_canvas.yview)
-    my_scrollbar.pack(side=RIGHT, fill=Y)
-    my_canvas.configure(yscrollcommand=my_scrollbar.set)
-    my_canvas.bind('<Configure>', lambda e:my_canvas.configure(scrollregion=my_canvas.bbox("all")))
-    second_frame=Frame(my_canvas)
-    my_canvas.create_window((0,0), window=second_frame, anchor="nw")
-    second_frame.configure(border=True ,highlightbackground="black",highlightthickness=1,width=300)
-    second_frame.place(x=60,y=15)
-    for i in range(0, len(accounts)):
-        x=accounts[i]
-        print(x['username'] + '   '+ x['password'])
-        num=Label(second_frame, text=n, width=5)
-        num.grid(column=0, row=n)
-        n1=Label(second_frame, text=x['username'], width=15)
-        n1.grid(column=1, row=n)
-        # n1.pack()
-        n2=Label(second_frame, text=x['password'],width=15)
-        n2.grid(column=2, row=n)
-        n=n+1
-'''
 def pageOne():
     pop=Toplevel()
     pop.geometry("400x500")
@@ -258,7 +201,7 @@ def pageThree():
     Label(second_frame, text="Sell",bg="#fff").grid(column=7,row=0)
 
     for i in range(0, len(value)):
-        print(value[i])
+        # print(value[i])
         Label(second_frame,text=n,bg="#fff").grid(column=0,row=n)
         Label(second_frame, text=value[i]['company'],bg="#fff").grid(column=1,row=n)
         Label(second_frame, text=value[i]['brand'],bg="#fff").grid(column=2,row=n)
@@ -281,8 +224,12 @@ HOST='127.0.0.1'
 PORT=33000
 BUFSIZE=1024
 FORMAT="utf8"
+
+# tạo socket server IPv4 type: Stream (TCP)
 SEVER=socket(AF_INET,SOCK_STREAM)
 SEVER.bind((HOST,PORT))
+
+
 def recvList(conn):
     list = []
 
