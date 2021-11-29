@@ -469,8 +469,5 @@ def entryHost():
 
 entryHost()
 
-
-# MainSearch()
 my_window.protocol("WM_DELETE_WINDOW", on_closing)
-
 my_window.mainloop()

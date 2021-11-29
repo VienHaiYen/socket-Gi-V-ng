@@ -9,7 +9,7 @@ from tkinter import ttk
 from PIL import Image, ImageTk
 from PIL.ImagePalette import load
 from threading import Event
-from datetime import datetime
+from datetime import datetime, time
 import requests
 
 # API
@@ -33,8 +33,22 @@ def reachAPI():
     f.write(json.dumps(data))
     f.close()
     print("Updated")
+# **************lấy các ngày ra thêm vào date.json********************************
+    with open("test_api.json", "r", encoding='utf-8') as fin:
+        data = json.load(fin)
+        fin.close()
+    timeline=[]
+
+    for i in range(0,len(data['golds'])):
+        timeline.append(data['golds'][i]['updated'])
+
+    # print("day la timeline : "+timeline)
+    f=open('date.json','w+')
+    f.write(json.dumps(timeline))
+    f.close()
+
 def start_api():
-    with open("test_api.json", "r", encoding='utf-8') as fin: #đọc myfile.json
+    with open("test_api.json", "r", encoding='utf-8') as fin:
         data = json.load(fin)
         fin.close()
     data=datetime.fromisoformat(data["last"])
@@ -111,8 +125,6 @@ def pageOne():
     for i in range(0, len(accounts)):
         x=accounts[i]
         print(x['username'] + '   '+ x['password'])
-        # num=Label(second_frame, text="     ", width=5)
-        # num.grid(column=1, row=n)
         num=Label(second_frame, text=n, width=10)
         num.grid(column=1, row=n)
         n1=Label(second_frame, text=x['username'], width=20)
@@ -163,6 +175,78 @@ def pageTwo():
         n2.grid(column=2, row=n)
         n=n+1
 
+
+def clearFrame():
+    # destroy all widgets from frame
+    for widget in second_frame.winfo_children():
+       widget.destroy()
+    # for widget in my_canvas.winfo_children():
+    #    widget.destroy()
+    # for widget in main_frame.winfo_children():
+    #    widget.destroy()
+
+
+
+choosenvalue=-1
+def getCombobox():
+    clearFrame()
+    choosenvalue=daychoosen.get()
+    num=-1
+    print(len(combdate))
+    for i in range(0, len(combdate)):
+        print(combdate[i])
+        if combdate[i] == choosenvalue:
+            num=i
+            break
+    print(num)
+    with open('test_api.json', 'r', encoding='utf-8') as f:
+        data=json.load(f)
+        f.close()
+
+    x= data['golds']
+    print("chieu dai mang la: "+ str(len(x)))
+    x1=x[num]
+    value=x1['value']
+    n=1
+
+    # main_frame=Frame(pop2)
+    # main_frame.pack(fill=BOTH,expand=1)
+    # my_canvas=Canvas(main_frame)
+    # my_canvas.pack(side=LEFT, fill=BOTH,expand=1)
+    # my_canvas.configure(bg="#fff")
+    # my_scrollbar=ttk.Scrollbar(main_frame, orient=VERTICAL,command=my_canvas.yview)
+    # my_scrollbar.pack(side=RIGHT, fill=Y)
+    # my_canvas.configure(yscrollcommand=my_scrollbar.set)
+    # my_canvas.bind('<Configure>', lambda e:my_canvas.configure(scrollregion=my_canvas.bbox("all")))
+    # second_frame=Frame(my_canvas)
+
+    second_frame.configure(bg="#fff")
+    # my_canvas.create_window((0,0), window=second_frame, anchor="nw")
+
+    Label(second_frame, text="Company",bg="#fff").grid(column=1,row=0)
+    Label(second_frame, text="Brand",bg="#fff").grid(column=2,row=0)
+
+    Label(second_frame, text="Brand1",bg="#fff").grid(column=3,row=0)
+    Label(second_frame, text="Type",bg="#fff").grid(column=4,row=0)
+
+    Label(second_frame, text="Buy",bg="#fff").grid(column=5,row=0)
+    Label(second_frame, text="Sell",bg="#fff").grid(column=7,row=0)
+
+    for i in range(0, len(value)):
+        # print(value[i])
+        Label(second_frame,text=n,bg="#fff").grid(column=0,row=n)
+        Label(second_frame, text=value[i]['company'],bg="#fff").grid(column=1,row=n)
+        Label(second_frame, text=value[i]['brand'],bg="#fff").grid(column=2,row=n)
+
+        Label(second_frame, text=value[i]['brand1'],bg="#fff").grid(column=3,row=n)
+        Label(second_frame, text=value[i]['type'],bg="#fff").grid(column=4,row=n)
+
+        Label(second_frame, text=value[i]['buy'],bg="#fff").grid(column=5,row=n)
+        Label(second_frame, text="      ",bg="#fff").grid(column=6,row=n)
+        Label(second_frame, text=value[i]['sell'],bg="#fff").grid(column=7,row=n)
+
+        n=n+1
+
 def pageThree():
     global pop2
     pop2=Toplevel()
@@ -170,14 +254,26 @@ def pageThree():
     pop2.title('Toan bo du lieu')
     pop2.configure(bg="#fff")
     Label(pop2, text="BẢNG GIÁ VÀNG",font=("iCiel Pacifico",15),bg="#fff").pack()
-    with open('myfile.json', 'r', encoding='utf-8') as f:
+
+    global daychoosen, combdate
+    daychoosen = ttk.Combobox(pop2, width = 27)
+    with open('date.json', 'r', encoding='utf-8') as f:
+        combdate=json.load(f)
+        f.close()
+
+    daychoosen['value']=combdate
+    daychoosen.current(0)
+    daychoosen.pack()
+    Button(pop2, text="Chọn",command=getCombobox).pack()
+
+    with open('test_api.json', 'r', encoding='utf-8') as f:
         data=json.load(f)
         f.close()
     x= data['golds']
     x1=x[0]
     value=x1['value']
     n=1
-
+    global main_frame,my_canvas,second_frame, my_scrollbar
     main_frame=Frame(pop2)
     main_frame.pack(fill=BOTH,expand=1)
     my_canvas=Canvas(main_frame)
@@ -214,6 +310,7 @@ def pageThree():
         Label(second_frame, text=value[i]['sell'],bg="#fff").grid(column=7,row=n)
 
         n=n+1
+
 
 __init__(my_window)
 
@@ -301,7 +398,7 @@ def search(client):
     print(brand)
     print(company)
     # mở file lấy data
-    with open('myfile.json', 'r', encoding='utf-8') as f:
+    with open('test_api.json', 'r', encoding='utf-8') as f:
         file=json.load(f)
         f.close()
     data= file['golds'][0]['value']
@@ -322,7 +419,6 @@ def search(client):
     else:
         result=data
     sendResult(client,result)
-
 
 def acceptConnection():
     while True:
