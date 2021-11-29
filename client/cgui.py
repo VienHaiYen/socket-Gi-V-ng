@@ -351,9 +351,7 @@ def logIn():
     log_in.tkraise()
 def recvDict(client):
     msg=client.recv(BUFSIZE).encode(FORMAT)
-
     print(dict)
-
     return dict
 
 def sendList(list):
@@ -378,12 +376,10 @@ def confirmAcc():
     if response=='accepted':
         MainSearch()
         return
-
     onErrorLogIn()
 
 def onErrorLostConnection():
     mbox.showerror("Error", "Sever đã đóng!")
-
 
 
 def quit():

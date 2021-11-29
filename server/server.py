@@ -348,6 +348,16 @@ def logOut(client,acc):
     f.write(json.dumps(data))
     f.close()
 
+def deleteOnlineList():
+    f=open('onlinelist.json','r')
+    data=json.load(f)
+    f.close()
+    data['account']=[]
+
+    f=open('onlinelist.json','w')
+    f.write(json.dumps(data))
+    f.close()
+
 def handleClient(client):
     acc=""
     while True:
@@ -375,4 +385,5 @@ SEVER.listen(5)
 Thread(target=acceptConnection,daemon=True).start()
 Thread(target=start_api,daemon=True).start()
 my_window.mainloop()
+deleteOnlineList()
 SEVER.close()
