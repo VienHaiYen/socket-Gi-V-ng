@@ -71,25 +71,7 @@ def recvResult(conn):
         response=response+conn.recv(BUFSIZE).decode(FORMAT)
     list=json.loads(response)
     return list
-'''
-def findInfo(INPUT1, INPUT2, value):
-    result=[]
 
-    a=INPUT1.strip("\n")
-    b=INPUT2.strip("\n")
-    print(len(value))
-
-    print(result)
-    print(len(result))
-    if len(result)==0:
-        print('Nothing has this brand')
-        noti_box=Toplevel()
-        noti_box.geometry("400x70")
-        noti=Label(noti_box, text="*Error: Nothing has this Brand=\" " + a+ '\" Company=\"'+b+" \"", fg="red", font=("Arial",10, "bold")).pack(expand=True)
-    else:
-        title=Label(second_big_frame, text="Kết quả trả về cho Brand=\"" + a+ '\" Company=\"'+b+" \"", font=("Arial",10,"bold"), fg="#006699").pack()
-        outputResult(result)
-'''
 def startPage():
     star_page=Frame(frame)
     star_page.configure(bg="#fff")
@@ -263,7 +245,6 @@ def sigIn():
     tempIMG=(Image.open("tech3.jpg"))
     startImg=tempIMG.resize((800,400),Image.ANTIALIAS)
     new_image= ImageTk.PhotoImage(startImg)
-    # photo = PhotoImage(file="login.png")
     label = Label(sign_in, image=new_image)
     label.image = new_image
     label.place(x=-105, y=-80)
@@ -303,21 +284,36 @@ def onErrorLogIn():
 def successfullSignIn():
     mbox.showinfo("Infomation", "Tạo tài khoản thành công, vui lòng đăng nhập")
 
+def onErrorLetterSpacing():
+    mbox.showerror("Error", "Username và password không tồn tại dấu cách")
+def onErrorNumberLetter():
+    mbox.showerror("Error", "Username phải bao gồm nhiều hơn 5 kí tự")
+
+def validSyntax(username, password):
+    if username.find(' ')!=-1 or password.find(' ')!=-1:
+        onErrorLetterSpacing()
+        return False
+    if len(username)<5:
+        onErrorNumberLetter()
+        return False
+    return True
+
 def saveNewAcc():
     user_sign=username_box.get()
     print("tên dang kí " + user_sign)
     password_sign=password_box.get()
     print("pass dang kí " +password_sign)
-    sendOption('SIGNIN')
-    account=[user_sign,password_sign]
-    sendList(account)
+    if validSyntax(user_sign,password_sign):
+        sendOption('SIGNIN')
+        account=[user_sign,password_sign]
+        sendList(account)
 
-    response=CLIENT.recv(BUFSIZE).decode(FORMAT)
-    if response=='signin failed':
-        onErrorSignIn()
-    else:
-        successfullSignIn()
-        logIn()
+        response=CLIENT.recv(BUFSIZE).decode(FORMAT)
+        if response=='signin failed':
+            onErrorSignIn()
+        else:
+            successfullSignIn()
+            logIn()
 
 
 def logIn():
