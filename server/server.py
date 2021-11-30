@@ -503,8 +503,14 @@ def sendGuiList(client):
     f=open('test_api.json','r')
     data=json.load(f)
     f.close()
+<<<<<<< Updated upstream
     result={"brand" : [],"company":[]}
     for i in data['golds']:
+=======
+    result={"brand" : [],"company":[],"date":[]}
+    for i in data['golds']:
+        result['date'].append(i['date'])
+>>>>>>> Stashed changes
         for j in i['value']:
             if j['company']!='' and not j['company'] in result['company']:
                 result['company'].append(j['company'])
@@ -512,6 +518,9 @@ def sendGuiList(client):
             if j['brand']!='' and not j['brand'] in result['brand']:
                 result['brand'].append(j['brand'])
     sendResult(client,result)
+<<<<<<< Updated upstream
+>>>>>>> Stashed changes
+=======
 >>>>>>> Stashed changes
 def handleClient(client):
     acc=""

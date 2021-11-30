@@ -177,14 +177,19 @@ def transfer(e=""):
         outputResult(result)
 
 def MainSearch():
+
+
     search_page=Frame(frame)
     # search_page.configure(bg="#ccc")
     my_window.geometry("750x700")
     my_window.title('Tim kiem Vang')
 
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
     Label(search_page, text="TÌM KIẾM GIÁ VÀNG", font=("iCiel Rukola", 15,"bold"), fg="red").place(x=0, y=50)
 =======
+=======
+>>>>>>> Stashed changes
     sendOption("GETGUILIST")
     # Dạng dict ["brand": [],"company": []]
     guilist=recvResult(CLIENT)
@@ -344,6 +349,9 @@ def validSyntax(username, password):
     return True
 
 def saveNewAcc(e=""):
+<<<<<<< Updated upstream
+>>>>>>> Stashed changes
+=======
 >>>>>>> Stashed changes
     user_sign=username_box.get()
     print("tên dang kí " + user_sign)
@@ -397,12 +405,15 @@ def logIn():
 
     log_in.grid(row=0,column=0,sticky='nsew')
     log_in.tkraise()
+<<<<<<< Updated upstream
 def recvDict(client):
     msg=client.recv(BUFSIZE).encode(FORMAT)
 
     print(dict)
 
     return dict
+=======
+>>>>>>> Stashed changes
 
 def sendList( list):
     for item in list:
@@ -513,10 +524,15 @@ def entryHost():
     host_btn=Button(entry_host,text="Submit",command=catchHost,bg="#000",fg="#fff", font=("Arial", 15), width=10)
     host_btn.pack(pady=5)
     changeOnHoverButton(host_btn)
+<<<<<<< Updated upstream
 
     ipHost_box.focus_set()
     portHost_box.bind("<Return>",catchHost)
 
+=======
+    ipHost_box.focus_set()
+    portHost_box.bind("<Return>",catchHost)
+>>>>>>> Stashed changes
     entry_host.grid(row=0,column=0,sticky='nsew')
     entry_host.tkraise()
 
