@@ -27,6 +27,10 @@ frame.grid_rowconfigure(0,weight=1)
 frame.grid_columnconfigure(0,weight=1)
 #
 def outputResult(result):
+    try:
+        clearFrame()
+    except:
+        pass
     global main_frame
     main_frame=Frame(second_big_frame)
     main_frame.pack(fill=BOTH,expand=1)
@@ -37,35 +41,46 @@ def outputResult(result):
     global my_scrollbar
     my_scrollbar=ttk.Scrollbar(main_frame, orient=VERTICAL,command=my_canvas.yview)
     my_scrollbar.pack(side=RIGHT, fill=Y)
+<<<<<<< Updated upstream
     my_canvas.configure(yscrollcommand=my_scrollbar.set, width=700, height=200)
+=======
+    my_canvas.configure(yscrollcommand=my_scrollbar.set)
+>>>>>>> Stashed changes
     my_canvas.bind('<Configure>', lambda e:my_canvas.configure(scrollregion=my_canvas.bbox("all")))
     global second_frame
     second_frame=Frame(my_canvas)
     my_canvas.create_window((0,0), window=second_frame, anchor="nw")
 
+<<<<<<< Updated upstream
     global outFrame
     outFrame=Frame(second_frame)
     Label(outFrame,text="           ").grid(column=0,row=1)
+=======
+    # Label(outFrame,text="      ").grid(column=0,row=1)
+>>>>>>> Stashed changes
     n=1
-    Label(outFrame,text="Brand", width=15).grid(column=1,row=n)
-    Label(outFrame,text="Company", width=10).grid(column=2,row=n)
-    Label(outFrame,text="Brand1", width=10).grid(column=3,row=n)
-    Label(outFrame,text="Type", width=30).grid(column=4,row=n)
-    Label(outFrame,text="Buy").grid(column=5,row=n)
-    Label(outFrame,text="Sell").grid(column=6,row=n)
-    outFrame.pack(fill=BOTH)
+    Label(second_frame,text="Brand", width=15).grid(column=1,row=n)
+    Label(second_frame,text="Company", width=10).grid(column=2,row=n)
+    Label(second_frame,text="Brand1", width=10).grid(column=3,row=n)
+    Label(second_frame,text="Type", width=30).grid(column=4,row=n)
+    Label(second_frame,text="Buy").grid(column=5,row=n)
+    Label(second_frame,text="Sell").grid(column=6,row=n)
+    second_frame.pack(fill=BOTH)
     for i in range (0,len(result)):
         n=n+1
-        Label(outFrame, text='   '+result[i]['brand']+'   ').grid(column=1,row=n)
-        Label(outFrame, text='   '+result[i]['company']+'   ').grid(column=2,row=n)
-        Label(outFrame, text='   '+result[i]['brand1']+'   ').grid(column=3,row=n)
-        Label(outFrame, text='   '+result[i]['type']+'   ').grid(column=4,row=n)
-        Label(outFrame, text=' '+result[i]['buy']+' ').grid(column=5,row=n)
-        Label(outFrame, text=' '+result[i]['sell']+' ').grid(column=6,row=n)
+        Label(second_frame, text='   '+result[i]['brand']+'   ').grid(column=1,row=n)
+        Label(second_frame, text='   '+result[i]['company']+'   ').grid(column=2,row=n)
+        Label(second_frame, text='   '+result[i]['brand1']+'   ').grid(column=3,row=n)
+        Label(second_frame, text='   '+result[i]['type']+'   ').grid(column=4,row=n)
+        Label(second_frame, text=' '+result[i]['buy']+' ').grid(column=5,row=n)
+        Label(second_frame, text=' '+result[i]['sell']+' ').grid(column=6,row=n)
 def recvResult(conn):
     length=conn.recv(BUFSIZE).decode(FORMAT)
     conn.send(bytes(length.encode(FORMAT)))
-    length=int(length)
+    if length=='':
+        length=0
+    else:
+        length=int(length)
     response=""
     while len(response)<length:
         response=response+conn.recv(BUFSIZE).decode(FORMAT)
@@ -119,8 +134,6 @@ def __init__():
     startPage()
 def clearFrame():
     # destroy all widgets from frame
-    for widget in outFrame.winfo_children():
-       widget.destroy()
     for widget in second_frame.winfo_children():
        widget.destroy()
     for widget in my_canvas.winfo_children():
@@ -143,7 +156,7 @@ def sendOption(option):
 
 
 
-def transfer():
+def transfer(e=""):
     sendOption('SEARCH')
     INPUT1=brand_box.get()
     INPUT2=company_box.get()
@@ -169,7 +182,29 @@ def MainSearch():
     my_window.geometry("750x700")
     my_window.title('Tim kiem Vang')
 
+<<<<<<< Updated upstream
     Label(search_page, text="TÌM KIẾM GIÁ VÀNG", font=("iCiel Rukola", 15,"bold"), fg="red").place(x=0, y=50)
+=======
+    sendOption("GETGUILIST")
+    # Dạng dict ["brand": [],"company": []]
+    guilist=recvResult(CLIENT)
+
+    tempIMG=(Image.open("square.png"))
+    startImg=tempIMG.resize((500,300),Image.ANTIALIAS)
+    new_image= ImageTk.PhotoImage(startImg)
+    # photo = PhotoImage(file="login.png")
+    label = Label(search_page, image=new_image)
+    label.image = new_image
+    label.place(x=0, y=0)
+
+    label2 = Label(search_page, image=new_image)
+    label2.image = new_image
+    label2.place(x=500, y=0)
+
+    label3 = Label(search_page, image=new_image)
+    label3.image = new_image
+    label3.place(x=1000, y=0)
+>>>>>>> Stashed changes
 
     tempIMG=(Image.open("user.png"))
     startImg=tempIMG.resize((50,50),Image.ANTIALIAS)
@@ -187,13 +222,22 @@ def MainSearch():
     lbl1=Label(input_bar, text="Gold Brand:                                                   ",font=("Arial",10,"bold")).pack()
     brand_box=Entry(input_bar,width=25,justify='center',font=("Arial",12))
     brand_box.pack()
+    brand_box.focus_set()
     lbl2=Label(input_bar, text="Gold Company:                                           ",font=("Arial",10,"bold")).pack()
     company_box=Entry(input_bar,width=25,justify='center',font=("Arial",12))
     company_box.pack()
 
     btn_frame=Frame(input_bar)
     btn_frame.pack(pady=10)
+<<<<<<< Updated upstream
     Button(btn_frame, text="SUBMIT", command=transfer,bg="#333", fg="#fff").grid(column=1, row=1)
+=======
+    submitbtn=Button(btn_frame, text="SUBMIT", command=transfer,bg="#333", fg="#fff")
+    submitbtn.grid(column=1, row=1)
+    changeOnHoverButton(submitbtn)
+    company_box.bind("<Return>",transfer)
+    brand_box.bind("<Return>",transfer)
+>>>>>>> Stashed changes
     Label(btn_frame,text="   ").grid(column=2, row=1)
     Button(btn_frame, text="Clear all Resuls", command=clearFrame,bg="#333",fg="#fff").grid(column=3, row=1)
 
@@ -266,6 +310,9 @@ def sigIn():
     changeOnHoverText(out_line)
     changeOnHoverButton(confirm)
 
+    username_box.focus_set()
+    password_box.bind("<Return>",saveNewAcc)
+
     sign_in.grid(row=0,column=0,sticky='nsew')
     sign_in.tkraise()
 
@@ -279,7 +326,25 @@ def onErrorLogIn():
 def successfullSignIn():
     mbox.showinfo("Infomation", "Tạo tài khoản thành công, vui lòng đăng nhập")
 
+<<<<<<< Updated upstream
 def saveNewAcc():
+=======
+def onErrorLetterSpacing():
+    mbox.showerror("Error", "Username và password không tồn tại dấu cách")
+def onErrorNumberLetter():
+    mbox.showerror("Error", "Username phải bao gồm nhiều hơn 5 kí tự")
+
+def validSyntax(username, password):
+    if username.find(' ')!=-1 or password.find(' ')!=-1:
+        onErrorLetterSpacing()
+        return False
+    if len(username)<5:
+        onErrorNumberLetter()
+        return False
+    return True
+
+def saveNewAcc(e=""):
+>>>>>>> Stashed changes
     user_sign=username_box.get()
     print("tên dang kí " + user_sign)
     password_sign=password_box.get()
@@ -327,6 +392,9 @@ def logIn():
     changeOnHoverText(out_line)
     changeOnHoverButton(confirm)
 
+    username_box_log.focus_set()
+    password_box_log.bind("<Return>",confirmAcc)
+
     log_in.grid(row=0,column=0,sticky='nsew')
     log_in.tkraise()
 def recvDict(client):
@@ -343,7 +411,7 @@ def sendList( list):
         CLIENT.recv(1024)
     msg = "end"
     CLIENT.send(msg.encode(FORMAT))
-def confirmAcc():
+def confirmAcc(e=""):
     # gui option login
     sendOption('LOGIN')
     global user_log
@@ -410,7 +478,7 @@ FORMAT="utf8"
 CLIENT=socket(AF_INET,SOCK_STREAM)
 #connect to sever
 
-def catchHost():
+def catchHost(e=""):
     ip=ipHost_box.get()
     port=portHost_box.get()
     try:
@@ -445,6 +513,10 @@ def entryHost():
     host_btn=Button(entry_host,text="Submit",command=catchHost,bg="#000",fg="#fff", font=("Arial", 15), width=10)
     host_btn.pack(pady=5)
     changeOnHoverButton(host_btn)
+
+    ipHost_box.focus_set()
+    portHost_box.bind("<Return>",catchHost)
+
     entry_host.grid(row=0,column=0,sticky='nsew')
     entry_host.tkraise()
 
