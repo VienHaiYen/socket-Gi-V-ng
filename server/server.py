@@ -24,7 +24,7 @@ def setInterval(func,time=1800):
 
 def reachAPI():
     now = datetime.now()
-    api_link="https://tygia.com/json.php?ran=0&rate=0&gold=1&bank=VIETCOM&date=now"
+    api_link="https://tygia.com/json.php?ran=0&rate=0&gold=1&bank=VIETCOM"
     res = requests.get(api_link).text
     res=res[2:]
     data=json.loads(res)
@@ -40,7 +40,7 @@ def start_api():
     data=datetime.fromisoformat(data["last"])
     now = datetime.now()
     countdown=now-data
-    if countdown.seconds > 1800:
+    if countdown.total_seconds() > 1800:
         reachAPI()
     else:
         setInterval(reachAPI,1800-countdown.seconds)
@@ -220,6 +220,61 @@ def pageTwo():
         n2.grid(column=2, row=n)
         n=n+1
 
+<<<<<<< Updated upstream
+=======
+
+def clearFrame():
+    # destroy all widgets from frame
+    # for widget in second_frame.winfo_children():
+    #     widget.destroy()
+    second_frame.destroy()
+    main_frame.destroy()
+    my_canvas.destroy()
+
+    # for widget in my_canvas.winfo_children():
+    #    widget.destroy()
+    # for widget in main_frame.winfo_children():
+    #    widget.destroy()
+
+
+
+choosenvalue=-1
+def getCombobox():
+    try:
+        clearFrame()
+    except:
+        pass
+    choosenvalue=daychoosen.get()
+    num=-1
+    print(len(combdate))
+    for i in range(0, len(combdate)):
+        print(combdate[i])
+        if combdate[i] == choosenvalue:
+            num=i
+            break
+    print(num)
+    with open('test_api.json', 'r', encoding='utf-8') as f:
+        data=json.load(f)
+        f.close()
+    for i in data['golds']:
+        if choosenvalue==i['date']:
+            value=i['value']
+            break
+    
+
+    # main_frame=Frame(pop2)
+    # main_frame.pack(fill=BOTH,expand=1)
+    # my_canvas=Canvas(main_frame)
+    # my_canvas.pack(side=LEFT, fill=BOTH,expand=1)
+    # my_canvas.configure(bg="#fff")
+    # my_scrollbar=ttk.Scrollbar(main_frame, orient=VERTICAL,command=my_canvas.yview)
+    # my_scrollbar.pack(side=RIGHT, fill=Y)
+    # my_canvas.configure(yscrollcommand=my_scrollbar.set)
+    # my_canvas.bind('<Configure>', lambda e:my_canvas.configure(scrollregion=my_canvas.bbox("all")))
+    # second_frame=Frame(my_canvas)
+    display(value)
+
+>>>>>>> Stashed changes
 def pageThree():
     global pop2
     pop2=Toplevel()
@@ -227,6 +282,7 @@ def pageThree():
     pop2.title('Toan bo du lieu')
     pop2.configure(bg="#fff")
     Label(pop2, text="BẢNG GIÁ VÀNG",font=("iCiel Pacifico",15),bg="#fff").pack()
+<<<<<<< Updated upstream
     with open('myfile.json', 'r', encoding='utf-8') as f:
         data=json.load(f)
         f.close()
@@ -235,10 +291,31 @@ def pageThree():
     value=x1['value']
     n=1
 
+=======
+
+    global daychoosen, combdate
+    daychoosen = ttk.Combobox(pop2, width = 27)
+    with open('test_api.json', 'r', encoding='utf-8') as f:
+        data=json.load(f)
+        f.close()
+    combdate=[]
+    for i in data['golds']:
+        combdate.append(i["date"])
+    daychoosen['value']=combdate
+    daychoosen.current(0)
+    daychoosen.pack()
+    Button(pop2, text="Chọn",command=getCombobox).pack()
+    
+    
+    
+def display(value_list):
+    global main_frame,my_canvas,second_frame, my_scrollbar
+>>>>>>> Stashed changes
     main_frame=Frame(pop2)
     main_frame.pack(fill=BOTH,expand=1)
     my_canvas=Canvas(main_frame)
     my_canvas.pack(side=LEFT, fill=BOTH,expand=1)
+    
     my_canvas.configure(bg="#fff")
     my_scrollbar=ttk.Scrollbar(main_frame, orient=VERTICAL,command=my_canvas.yview)
     my_scrollbar.pack(side=RIGHT, fill=Y)
@@ -256,22 +333,32 @@ def pageThree():
 
     Label(second_frame, text="Buy",bg="#fff").grid(column=5,row=0)
     Label(second_frame, text="Sell",bg="#fff").grid(column=7,row=0)
+<<<<<<< Updated upstream
 
     for i in range(0, len(value)):
         print(value[i])
+=======
+    n=1
+    for i in range(0, len(value_list)):
+        # print(value[i])
+        
+>>>>>>> Stashed changes
         Label(second_frame,text=n,bg="#fff").grid(column=0,row=n)
-        Label(second_frame, text=value[i]['company'],bg="#fff").grid(column=1,row=n)
-        Label(second_frame, text=value[i]['brand'],bg="#fff").grid(column=2,row=n)
+        Label(second_frame, text=value_list[i]['company'],bg="#fff").grid(column=1,row=n)
+        Label(second_frame, text=value_list[i]['brand'],bg="#fff").grid(column=2,row=n)
 
-        Label(second_frame, text=value[i]['brand1'],bg="#fff").grid(column=3,row=n)
-        Label(second_frame, text=value[i]['type'],bg="#fff").grid(column=4,row=n)
+        Label(second_frame, text=value_list[i]['brand1'],bg="#fff").grid(column=3,row=n)
+        Label(second_frame, text=value_list[i]['type'],bg="#fff").grid(column=4,row=n)
 
-        Label(second_frame, text=value[i]['buy'],bg="#fff").grid(column=5,row=n)
+        Label(second_frame, text=value_list[i]['buy'],bg="#fff").grid(column=5,row=n)
         Label(second_frame, text="      ",bg="#fff").grid(column=6,row=n)
-        Label(second_frame, text=value[i]['sell'],bg="#fff").grid(column=7,row=n)
+        Label(second_frame, text=value_list[i]['sell'],bg="#fff").grid(column=7,row=n)
 
         n=n+1
+<<<<<<< Updated upstream
 
+=======
+>>>>>>> Stashed changes
 __init__(my_window)
 
 
@@ -401,6 +488,31 @@ def logOut(client,acc):
     f.write(json.dumps(data))
     f.close()
 
+<<<<<<< Updated upstream
+=======
+def deleteOnlineList():
+    f=open('onlinelist.json','r')
+    data=json.load(f)
+    f.close()
+    data['account']=[]
+
+    f=open('onlinelist.json','w')
+    f.write(json.dumps(data))
+    f.close()
+def sendGuiList(client):
+    f=open('test_api.json','r')
+    data=json.load(f)
+    f.close()
+    result={"brand" : [],"company":[]}
+    for i in data['golds']:
+        for j in i['value']:
+            if j['company']!='' and not j['company'] in result['company']:
+                result['company'].append(j['company'])
+        for j in i['value']:
+            if j['brand']!='' and not j['brand'] in result['brand']:
+                result['brand'].append(j['brand'])
+    sendResult(client,result)
+>>>>>>> Stashed changes
 def handleClient(client):
     acc=""
     while True:
@@ -412,6 +524,8 @@ def handleClient(client):
                 print(acc)
             elif option=='SIGNIN':
                 checkSignin(client)
+            elif option=='GETGUILIST':
+                sendGuiList(client)
             elif option=='SEARCH':
                 search(client)
             elif option=='exit':
