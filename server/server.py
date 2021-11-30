@@ -452,7 +452,20 @@ def deleteOnlineList():
     f=open('onlinelist.json','w')
     f.write(json.dumps(data))
     f.close()
-
+def sendGuiList(client):
+    f=open('test_api.json','r')
+    data=json.load(f)
+    f.close()
+    result={"brand" : [],"company":[],"date":[]}
+    for i in data['golds']:
+        result['date'].append(i['date'])
+        for j in i['value']:
+            if j['company']!='' and not j['company'] in result['company']:
+                result['company'].append(j['company'])
+        for j in i['value']:
+            if j['brand']!='' and not j['brand'] in result['brand']:
+                result['brand'].append(j['brand'])
+    sendResult(client,result)
 def handleClient(client):
     acc=""
     while True:
@@ -464,6 +477,8 @@ def handleClient(client):
                 print(acc)
             elif option=='SIGNIN':
                 checkSignin(client)
+            elif option=='GETGUILIST':
+                sendGuiList(client)
             elif option=='SEARCH':
                 search(client)
             elif option=='exit':

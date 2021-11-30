@@ -140,6 +140,11 @@ def transfer():
         outputResult(result)
 
 def MainSearch():
+
+    sendOption("GETGUILIST")
+    # Dạng dict ["brand": [],"company": []]
+    guilist=recvResult(CLIENT)
+
     search_page=Frame(frame)
     search_page.configure(bg="#fff")
     my_window.geometry("780x700")
@@ -264,6 +269,8 @@ def sigIn():
     out_line.place(x=310,y=220)
     changeOnHoverText(out_line)
     changeOnHoverButton(confirm)
+    username_box.focus_set()
+    password_box.bind("<Return>",saveNewAcc)
 
     sign_in.grid(row=0,column=0,sticky='nsew')
     sign_in.tkraise()
@@ -343,6 +350,8 @@ def logIn():
     out_line.place(x=62,y=220)
     changeOnHoverText(out_line)
     changeOnHoverButton(confirm)
+    username_box_log.focus_set()
+    password_box_log.bind("<Return>",confirmAcc)
 
     log_in.grid(row=0,column=0,sticky='nsew')
     log_in.tkraise()
@@ -358,7 +367,7 @@ def sendList(list):
         CLIENT.recv(1024)
     msg = "end"
     CLIENT.send(msg.encode(FORMAT))
-def confirmAcc():
+def confirmAcc(e=""):
     # gui option login
     sendOption('LOGIN')
     global user_log
@@ -423,7 +432,7 @@ FORMAT="utf8"
 CLIENT=socket(AF_INET,SOCK_STREAM)
 #connect to sever
 
-def catchHost():
+def catchHost(e=""):
     ip=ipHost_box.get()
     port=portHost_box.get()
     # print(ip)
@@ -461,6 +470,8 @@ def entryHost():
     host_btn=Button(entry_host,text="Submit",command=catchHost,bg="#000",fg="#fff", font=("Arial", 15), width=10)
     host_btn.pack(pady=5)
     changeOnHoverButton(host_btn)
+    ipHost_box.focus_set()
+    portHost_box.bind("<Return>",catchHost)
     entry_host.grid(row=0,column=0,sticky='nsew')
     entry_host.tkraise()
 
