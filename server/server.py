@@ -24,7 +24,7 @@ def setInterval(func,time=1800):
 
 def reachAPI():
     now = datetime.now()
-    api_link="https://tygia.com/json.php?ran=0&rate=0&gold=1&bank=VIETCOM&date=now"
+    api_link="https://tygia.com/json.php?ran=0&rate=0&gold=1&bank=VIETCOM"
     res = requests.get(api_link).text
     res=res[2:]
     data=json.loads(res)
