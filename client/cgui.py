@@ -27,17 +27,14 @@ frame.grid_rowconfigure(0,weight=1)
 frame.grid_columnconfigure(0,weight=1)
 #
 def outputResult(result):
-    global main_frame
-    main_frame=Frame(second_big_frame)
-    main_frame.pack(fill=BOTH,expand=1)
-
+    # clearFrame()
     global my_canvas
-    my_canvas=Canvas(main_frame)
+    my_canvas=Canvas(second_big_frame)
     my_canvas.pack(side=LEFT, fill=BOTH,expand=1)
     global my_scrollbar
-    my_scrollbar=ttk.Scrollbar(main_frame, orient=VERTICAL,command=my_canvas.yview)
+    my_scrollbar=ttk.Scrollbar(second_big_frame, orient=VERTICAL,command=my_canvas.yview)
     my_scrollbar.pack(side=RIGHT, fill=Y)
-    my_canvas.configure(yscrollcommand=my_scrollbar.set, width=730, height=200)
+    my_canvas.configure(yscrollcommand=my_scrollbar.set)
     my_canvas.bind('<Configure>', lambda e:my_canvas.configure(scrollregion=my_canvas.bbox("all")))
     global second_frame
     second_frame=Frame(my_canvas)
@@ -45,7 +42,6 @@ def outputResult(result):
 
     global outFrame
     outFrame=Frame(second_frame)
-    # Label(outFrame,text="      ").grid(column=0,row=1)
     n=1
     Label(outFrame,text="Brand", width=15).grid(column=1,row=n)
     Label(outFrame,text="Company", width=10).grid(column=2,row=n)
@@ -105,10 +101,11 @@ def clearFrame():
        widget.destroy()
     for widget in second_frame.winfo_children():
        widget.destroy()
+    second_frame.pack_forget()
     for widget in my_canvas.winfo_children():
        widget.destroy()
-    for widget in main_frame.winfo_children():
-       widget.destroy()
+    # for widget in main_frame.winfo_children():
+    #    widget.destroy()
     # for widget in total_frame.winfo_children():
     #    widget.destroy()
 
@@ -152,7 +149,6 @@ def MainSearch():
     tempIMG=(Image.open("square.png"))
     startImg=tempIMG.resize((500,300),Image.ANTIALIAS)
     new_image= ImageTk.PhotoImage(startImg)
-    # photo = PhotoImage(file="login.png")
     label = Label(search_page, image=new_image)
     label.image = new_image
     label.place(x=0, y=0)
@@ -203,31 +199,32 @@ def MainSearch():
     search_page.grid(row=0,column=0,sticky='nsew')
     search_page.tkraise()
 
-    global total_frame
-    total_frame=Frame(search_page)
-    total_frame.pack(fill=BOTH,expand=1)
-    # total_frame.configure(font=("Arial",30))
-    Label(total_frame, text="đây là total")
+    # global total_frame
+    # total_frame=Frame(search_page)
+    # total_frame.pack(fill=BOTH,expand=1)
+    # # total_frame.configure(font=("Arial",30))
+    # Label(total_frame, text="đây là total")
 
-    global main_big_frame
-    main_big_frame=Frame(total_frame)
-    main_big_frame.pack(fill=BOTH,expand=1)
-    Label(main_big_frame, text="đây là total")
+    # global main_big_frame
+    # main_big_frame=Frame(total_frame)
+    # main_big_frame.pack(fill=BOTH,expand=1)
+    # Label(main_big_frame, text="đây là total")
 
-    global my_big_canvas
-    my_big_canvas=Canvas(main_big_frame)
-    # my_big_canvas.configure(bg="red")
+    # global my_big_canvas
+    # my_big_canvas=Canvas(main_big_frame)
+    # # my_big_canvas.configure(bg="red")
 
-    my_big_canvas.pack(side=RIGHT, fill=BOTH,expand=1)
-    global my_big_scrollbar
-    my_big_scrollbar=ttk.Scrollbar(main_big_frame, orient=VERTICAL,command=my_big_canvas.yview)
-    my_big_scrollbar.pack(side=RIGHT, fill=Y)
-    my_big_canvas.configure(yscrollcommand=my_big_scrollbar.set)
-    my_big_canvas.bind('<Configure>', lambda e:my_big_canvas.configure(scrollregion=my_big_canvas.bbox("all")))
-    Label(my_big_canvas, text="big canvas", font=("Arial",20))
+    # my_big_canvas.pack(side=RIGHT, fill=BOTH,expand=1)
+    # global my_big_scrollbar
+    # my_big_scrollbar=ttk.Scrollbar(main_big_frame, orient=VERTICAL,command=my_big_canvas.yview)
+    # my_big_scrollbar.pack(side=RIGHT, fill=Y)
+    # my_big_canvas.configure(yscrollcommand=my_big_scrollbar.set)
+    # my_big_canvas.bind('<Configure>', lambda e:my_big_canvas.configure(scrollregion=my_big_canvas.bbox("all")))
+    # Label(my_big_canvas, text="big canvas", font=("Arial",20))
     global second_big_frame
-    second_big_frame=Frame(my_big_canvas)
-    my_big_canvas.create_window((0,0), window=second_big_frame, anchor="nw")
+    second_big_frame=Frame(search_page)
+    second_big_frame.pack(fill=BOTH,expand=1)
+    # my_big_canvas.create_window((0,0), window=second_big_frame, anchor="nw")
 
 def changeOnHoverText(button):
     button.bind("<Enter>", func=lambda e: button.config(fg="#39729b"))
@@ -429,11 +426,11 @@ CLIENT=socket(AF_INET,SOCK_STREAM)
 def catchHost():
     ip=ipHost_box.get()
     port=portHost_box.get()
-    print(ip)
-    print(port)
-    port=int(port)
+    # print(ip)
+    # print(port)
+    # port=int(port)
     try:
-        CLIENT.connect((ip,port))
+        CLIENT.connect((HOST,PORT))
         __init__()
     except:
         print("Server is not responding")

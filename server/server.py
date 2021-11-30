@@ -137,8 +137,7 @@ def pageOne():
 def pageTwo():
     global pop1
     pop1=Toplevel()
-    # scroll = Scrollbar(pop)
-    # scroll.pack( side = RIGHT, fill = Y )
+
     pop1.geometry("400x500")
     pop1.title('Danh sach tai khoan')
     # lbl.config(font=("Humblle Rought All Caps",30))
