@@ -5,8 +5,6 @@ from io import BufferedReader
 from tkinter import *
 from tkinter import ttk
 
-
-
 from tkinter import scrolledtext
 import json
 import tkinter.messagebox as mbox
@@ -20,7 +18,6 @@ my_window.title('Client Version')
 my_window.geometry("600x300")
 
 
-
 frame=Frame()
 frame.pack(side='top',fill='both',expand=True)
 frame.grid_rowconfigure(0,weight=1)
@@ -31,79 +28,45 @@ def outputResult(result):
         clearFrame()
     except:
         pass
-    global main_frame
-    main_frame=Frame(second_big_frame)
-    main_frame.pack(fill=BOTH,expand=1)
-
     global my_canvas
-    my_canvas=Canvas(main_frame)
+    my_canvas=Canvas(second_big_frame)
     my_canvas.pack(side=LEFT, fill=BOTH,expand=1)
     global my_scrollbar
-    my_scrollbar=ttk.Scrollbar(main_frame, orient=VERTICAL,command=my_canvas.yview)
+    my_scrollbar=ttk.Scrollbar(second_big_frame, orient=VERTICAL,command=my_canvas.yview)
     my_scrollbar.pack(side=RIGHT, fill=Y)
-<<<<<<< Updated upstream
-    my_canvas.configure(yscrollcommand=my_scrollbar.set, width=700, height=200)
-=======
     my_canvas.configure(yscrollcommand=my_scrollbar.set)
->>>>>>> Stashed changes
     my_canvas.bind('<Configure>', lambda e:my_canvas.configure(scrollregion=my_canvas.bbox("all")))
     global second_frame
     second_frame=Frame(my_canvas)
     my_canvas.create_window((0,0), window=second_frame, anchor="nw")
 
-<<<<<<< Updated upstream
     global outFrame
     outFrame=Frame(second_frame)
-    Label(outFrame,text="           ").grid(column=0,row=1)
-=======
-    # Label(outFrame,text="      ").grid(column=0,row=1)
->>>>>>> Stashed changes
     n=1
-    Label(second_frame,text="Brand", width=15).grid(column=1,row=n)
-    Label(second_frame,text="Company", width=10).grid(column=2,row=n)
-    Label(second_frame,text="Brand1", width=10).grid(column=3,row=n)
-    Label(second_frame,text="Type", width=30).grid(column=4,row=n)
-    Label(second_frame,text="Buy").grid(column=5,row=n)
-    Label(second_frame,text="Sell").grid(column=6,row=n)
-    second_frame.pack(fill=BOTH)
+    Label(outFrame,text="Brand",font=("Arial",10,"bold"),fg="blue", width=15).grid(column=1,row=n)
+    Label(outFrame,text="Company",font=("Arial",10,"bold"),fg="blue", width=10).grid(column=2,row=n)
+    Label(outFrame,text="Brand1",font=("Arial",10,"bold"),fg="blue", width=10).grid(column=3,row=n)
+    Label(outFrame,text="Type",font=("Arial",10,"bold"),fg="blue", width=30).grid(column=4,row=n)
+    Label(outFrame,font=("Arial",10,"bold"),fg="blue",text="Buy").grid(column=5,row=n)
+    Label(outFrame,font=("Arial",10,"bold"),fg="blue",text="Sell").grid(column=6,row=n)
+    outFrame.pack(fill=BOTH)
     for i in range (0,len(result)):
         n=n+1
-        Label(second_frame, text='   '+result[i]['brand']+'   ').grid(column=1,row=n)
-        Label(second_frame, text='   '+result[i]['company']+'   ').grid(column=2,row=n)
-        Label(second_frame, text='   '+result[i]['brand1']+'   ').grid(column=3,row=n)
-        Label(second_frame, text='   '+result[i]['type']+'   ').grid(column=4,row=n)
-        Label(second_frame, text=' '+result[i]['buy']+' ').grid(column=5,row=n)
-        Label(second_frame, text=' '+result[i]['sell']+' ').grid(column=6,row=n)
+        Label(outFrame, text='   '+result[i]['brand']+'   ').grid(column=1,row=n)
+        Label(outFrame, text='   '+result[i]['company']+'   ').grid(column=2,row=n)
+        Label(outFrame, text='   '+result[i]['brand1']+'   ').grid(column=3,row=n)
+        Label(outFrame, text='   '+result[i]['type']+'   ').grid(column=4,row=n)
+        Label(outFrame, text=' '+result[i]['buy']+' ').grid(column=5,row=n)
+        Label(outFrame, text=' '+result[i]['sell']+' ').grid(column=6,row=n)
 def recvResult(conn):
     length=conn.recv(BUFSIZE).decode(FORMAT)
     conn.send(bytes(length.encode(FORMAT)))
-    if length=='':
-        length=0
-    else:
-        length=int(length)
+    length=int(length)
     response=""
     while len(response)<length:
         response=response+conn.recv(BUFSIZE).decode(FORMAT)
     list=json.loads(response)
     return list
-
-def findInfo(INPUT1, INPUT2, value):
-    result=[]
-
-    a=INPUT1.strip("\n")
-    b=INPUT2.strip("\n")
-    print(len(value))
-    
-    print(result)
-    print(len(result))
-    if len(result)==0:
-        print('Nothing has this brand')
-        noti_box=Toplevel()
-        noti_box.geometry("400x70")
-        noti=Label(noti_box, text="*Error: Nothing has this Brand=\" " + a+ '\" Company=\"'+b+" \"", fg="red", font=("Arial",10, "bold")).pack(expand=True)
-    else:
-        title=Label(second_big_frame, text="Kết quả trả về cho Brand=\"" + a+ '\" Company=\"'+b+" \"", font=("Arial",10,"bold"), fg="#006699").pack()
-        outputResult(result)
 
 def startPage():
     star_page=Frame(frame)
@@ -114,7 +77,6 @@ def startPage():
     tempIMG=(Image.open("tech2.jpg"))
     startImg=tempIMG.resize((800,400),Image.ANTIALIAS)
     new_image= ImageTk.PhotoImage(startImg)
-    # photo = PhotoImage(file="login.png")
     label = Label(star_page, image=new_image)
     label.image = new_image
     label.place(x=-105, y=-80)
@@ -134,18 +96,15 @@ def __init__():
     startPage()
 def clearFrame():
     # destroy all widgets from frame
+    for widget in outFrame.winfo_children():
+       widget.destroy()
     for widget in second_frame.winfo_children():
        widget.destroy()
+    second_frame.pack_forget()
     for widget in my_canvas.winfo_children():
        widget.destroy()
-    for widget in main_frame.winfo_children():
-       widget.destroy()
-    # for widget in total_frame.winfo_children():
-    #    widget.destroy()
-
     for widget in second_big_frame.winfo_children():
        widget.destroy()
-    # my_big_scrollbar.pack_forget()
 
 def sendOption(option):
     try:
@@ -156,7 +115,7 @@ def sendOption(option):
 
 
 
-def transfer(e=""):
+def transfer():
     sendOption('SEARCH')
     INPUT1=brand_box.get()
     INPUT2=company_box.get()
@@ -168,31 +127,27 @@ def transfer(e=""):
     sendList(searchkey)
     result=recvResult(CLIENT)
     if len(result)==0:
-        print('Nothing has this brand')
-        noti_box=Toplevel()
-        noti_box.geometry("400x70")
-        Label(noti_box, text="*Error: Nothing has this Brand=\" " + INPUT1+ '\" Company=\"'+INPUT2+" \"", fg="red", font=("Arial",10, "bold")).pack(expand=True)
+        onErrorSearching()
     else:
-        Label(second_big_frame, text="Kết quả trả về cho Brand=\"" + INPUT1+ '\" Company=\"'+INPUT2+"\"", font=("Arial",10,"bold"), fg="#006699").pack()
+        # Label(second_big_frame, text="Kết quả trả về cho Brand=\"" + INPUT1+ '\" Company=\"'+INPUT2+"\"", font=("Arial",10,"bold"), fg="#006699").pack()
         outputResult(result)
 
 def MainSearch():
-    search_page=Frame(frame)
-    # search_page.configure(bg="#ccc")
-    my_window.geometry("750x700")
-    my_window.title('Tim kiem Vang')
-
-<<<<<<< Updated upstream
-    Label(search_page, text="TÌM KIẾM GIÁ VÀNG", font=("iCiel Rukola", 15,"bold"), fg="red").place(x=0, y=50)
-=======
     sendOption("GETGUILIST")
     # Dạng dict ["brand": [],"company": []]
     guilist=recvResult(CLIENT)
+    guilist['brand'].insert (0, '')
+    guilist['company'].insert (0, '')
+
+    search_page=Frame(frame)
+    search_page.configure(bg="#fff")
+    my_window.geometry("780x700")
+    my_window.title('Tim kiem Vang')
+    search_page.tkraise()
 
     tempIMG=(Image.open("square.png"))
     startImg=tempIMG.resize((500,300),Image.ANTIALIAS)
     new_image= ImageTk.PhotoImage(startImg)
-    # photo = PhotoImage(file="login.png")
     label = Label(search_page, image=new_image)
     label.image = new_image
     label.place(x=0, y=0)
@@ -204,71 +159,72 @@ def MainSearch():
     label3 = Label(search_page, image=new_image)
     label3.image = new_image
     label3.place(x=1000, y=0)
->>>>>>> Stashed changes
 
-    tempIMG=(Image.open("user.png"))
-    startImg=tempIMG.resize((50,50),Image.ANTIALIAS)
-    new_image= ImageTk.PhotoImage(startImg)
-    label = Label(search_page, image=new_image)
-    label.image = new_image
-    label.place(x=0, y=0)
-    Label(search_page, text="Name: "+ user_log, font=("ROBOTO", 12), fg="#292F34").place(x=60, y=15)
-    Label(text="", font=("ROBOTO",10)).pack()
+    label4 = Label(search_page, image=new_image)
+    label4.image = new_image
+    label4.place(x=1500, y=0)
+
+    # Label(search_page,text="", font=("ROBOTO",10)).pack(pady=10)
     input_bar=Frame(search_page)
-    input_bar.pack()
-
+    input_bar.pack(pady=10)
+    # Label(input_bar,text="      ").grid(column=1,row=0)
+    Label(input_bar, text="Date",font=("Arial",10,"bold"),justify="left").grid(column=1,row=1)
+    global datecomb
     global brand_box
     global company_box
-    lbl1=Label(input_bar, text="Gold Brand:                                                   ",font=("Arial",10,"bold")).pack()
-    brand_box=Entry(input_bar,width=25,justify='center',font=("Arial",12))
-    brand_box.pack()
-    brand_box.focus_set()
-    lbl2=Label(input_bar, text="Gold Company:                                           ",font=("Arial",10,"bold")).pack()
-    company_box=Entry(input_bar,width=25,justify='center',font=("Arial",12))
-    company_box.pack()
 
-    btn_frame=Frame(input_bar)
-    btn_frame.pack(pady=10)
-<<<<<<< Updated upstream
-    Button(btn_frame, text="SUBMIT", command=transfer,bg="#333", fg="#fff").grid(column=1, row=1)
-=======
-    submitbtn=Button(btn_frame, text="SUBMIT", command=transfer,bg="#333", fg="#fff")
+    datecomb=ttk.Combobox(input_bar,justify="center",width=25,font=("Arial",10))
+    datecomb['value']=guilist['date']
+    datecomb.current(0)
+    datecomb.grid(column=1,row=2)
+
+    Label(input_bar,text="      ").grid(column=2,row=1)
+    Label(input_bar, text="Gold Brand",font=("Arial",10,"bold"),justify="left").grid(column=3,row=1)
+    brand_box=ttk.Combobox(input_bar,justify="center",width=25,font=("Arial",10))
+    brand_box['value']=guilist['brand']
+    brand_box.current(0)
+    brand_box.grid(column=3,row=2)
+    # brand_box=Entry(input_bar,width=25,justify='center',font=("Arial",12))
+    # brand_box.pack()
+
+    Label(input_bar,text="      ").grid(column=4,row=1)
+    Label(input_bar, text="Gold Company",font=("Arial",10,"bold"),justify="left").grid(column=5,row=1)
+    company_box=ttk.Combobox(input_bar,justify="center",width=25,font=("Arial",10))
+    company_box['value']=guilist['company']
+    company_box.current(0)
+    company_box.grid(column=5,row=2)
+    # company_box=Entry(input_bar,width=25,justify='center',font=("Arial",12))
+    # company_box.pack()
+    # Label(input_bar,text="      ").grid(column=6,row=1)
+
+    Label(input_bar,text="           ").grid(column=7,row=0)
+
+    tempIMG=(Image.open("exit.png"))
+    startImg=tempIMG.resize((25,30),Image.ANTIALIAS)
+    new_image= ImageTk.PhotoImage(startImg)
+    exit_btn = Button(input_bar, image=new_image,border=False)
+    exit_btn.image = new_image
+    exit_btn.grid(column=8,row=0,rowspan=2)
+
+    btn_frame=Frame(search_page)
+    # btn_frame.grid(column=7,row=1,rowspan=2)
+    btn_frame.pack()
+    submitbtn=Button(btn_frame, text="SUBMIT",font=("Arial",10,"bold"),width=15, command=transfer,bg="#333", fg="#fff")
     submitbtn.grid(column=1, row=1)
     changeOnHoverButton(submitbtn)
-    company_box.bind("<Return>",transfer)
-    brand_box.bind("<Return>",transfer)
->>>>>>> Stashed changes
     Label(btn_frame,text="   ").grid(column=2, row=1)
-    Button(btn_frame, text="Clear all Resuls", command=clearFrame,bg="#333",fg="#fff").grid(column=3, row=1)
-
+    clearbtn=Button(btn_frame, text="Clear all Resuls",font=("Arial",10,"bold"),width=20, command=clearFrame,bg="#333",fg="#fff")
+    clearbtn.grid(column=3, row=1)
+    Label(btn_frame,text="\t\t\t\t").grid(column=4, row=1)
+    changeOnHoverButton(clearbtn)
+    Label(search_page,text="", font=("ROBOTO",10)).pack(pady=10)
     search_page.grid(row=0,column=0,sticky='nsew')
-    search_page.tkraise()
 
-    global total_frame
-    total_frame=Frame(search_page)
-    total_frame.pack(fill=BOTH,expand=1)
-    # total_frame.configure(font=("Arial",30))
-    Label(total_frame, text="đây là total")
-
-    global main_big_frame
-    main_big_frame=Frame(total_frame)
-    main_big_frame.pack(fill=BOTH,expand=1)
-
-    Label(main_big_frame, text="đây là total")
-
-
-    global my_big_canvas
-    my_big_canvas=Canvas(main_big_frame)
-    my_big_canvas.pack(side=LEFT, fill=BOTH,expand=1)
-    global my_big_scrollbar
-    my_big_scrollbar=ttk.Scrollbar(main_big_frame, orient=VERTICAL,command=my_big_canvas.yview)
-    my_big_scrollbar.pack(side=RIGHT, fill=Y)
-    my_big_canvas.configure(yscrollcommand=my_big_scrollbar.set)
-    my_big_canvas.bind('<Configure>', lambda e:my_big_canvas.configure(scrollregion=my_big_canvas.bbox("all")))
-    Label(my_big_canvas, text="big canvas", font=("Arial",20))
     global second_big_frame
-    second_big_frame=Frame(my_big_canvas)
-    my_big_canvas.create_window((0,0), window=second_big_frame, anchor="nw")
+    second_big_frame=Frame(search_page)
+    second_big_frame.pack(fill=BOTH,expand=1)
+
+
 
 def changeOnHoverText(button):
     button.bind("<Enter>", func=lambda e: button.config(fg="#39729b"))
@@ -286,21 +242,19 @@ def sigIn():
     tempIMG=(Image.open("tech3.jpg"))
     startImg=tempIMG.resize((800,400),Image.ANTIALIAS)
     new_image= ImageTk.PhotoImage(startImg)
-    # photo = PhotoImage(file="login.png")
     label = Label(sign_in, image=new_image)
     label.image = new_image
     label.place(x=-105, y=-80)
 
     Label(sign_in, text="Đăng kí tài khoản", font=("iCiel Pacifico",20),bg="#fff").place(x=270,y=30)
-
     input_signin=Frame(sign_in)
     input_signin.place(x=280,y=100)
     global username_box, password_box
-    username=Label(input_signin, text="User Name:", font=("Arial",10),bg="#fff").grid(column=1, row=1)
+    Label(input_signin, text="User Name:", font=("Arial",10),bg="#fff").grid(column=1, row=1)
     username_box=Entry(input_signin)
     username_box.grid(column=2, row=1)
     Label(input_signin, text="   ", height=1,font=("Arial",2)).grid(column=1, row=2)
-    password=Label(input_signin, text="Password: ", font=("Arial",10),bg="#fff").grid(column=1, row=3)
+    Label(input_signin, text="Password: ", font=("Arial",10),bg="#fff").grid(column=1, row=3)
     password_box=Entry(input_signin)
     password_box.grid(column=2, row=3)
     confirm=Button(sign_in,text="Sign-in Account",bg="#000", fg="#fff",command=saveNewAcc,width=20)
@@ -309,7 +263,6 @@ def sigIn():
     out_line.place(x=310,y=220)
     changeOnHoverText(out_line)
     changeOnHoverButton(confirm)
-
     username_box.focus_set()
     password_box.bind("<Return>",saveNewAcc)
 
@@ -319,20 +272,18 @@ def sigIn():
 
 def onErrorSignIn():
     mbox.showerror("Error", "Tên tài khoản đã được sử dụng, vui lòng thử lại")
-
+def onErrorSearching():
+    mbox.showerror("Error", "Không tìm thấy kết quả, vui lòng thử lại")
 def onErrorLogIn():
     mbox.showerror("Error", "Sai thông tin đăng nhập, vui lòng thử lại")
-
 def successfullSignIn():
     mbox.showinfo("Infomation", "Tạo tài khoản thành công, vui lòng đăng nhập")
-
-<<<<<<< Updated upstream
-def saveNewAcc():
-=======
 def onErrorLetterSpacing():
     mbox.showerror("Error", "Username và password không tồn tại dấu cách")
 def onErrorNumberLetter():
     mbox.showerror("Error", "Username phải bao gồm nhiều hơn 5 kí tự")
+def onErrorLostConnection():
+    mbox.showerror("Error", "Sever đã đóng!")
 
 def validSyntax(username, password):
     if username.find(' ')!=-1 or password.find(' ')!=-1:
@@ -343,22 +294,21 @@ def validSyntax(username, password):
         return False
     return True
 
-def saveNewAcc(e=""):
->>>>>>> Stashed changes
+def saveNewAcc():
     user_sign=username_box.get()
     print("tên dang kí " + user_sign)
     password_sign=password_box.get()
     print("pass dang kí " +password_sign)
-    sendOption('SIGNIN')
-    account=[user_sign,password_sign]
-    sendList(account)
-
-    response=CLIENT.recv(BUFSIZE).decode(FORMAT)
-    if response=='signin failed':
-        onErrorSignIn()
-    else:
-        successfullSignIn()
-        logIn()
+    if validSyntax(user_sign,password_sign):
+        sendOption('SIGNIN')
+        account=[user_sign,password_sign]
+        sendList(account)
+        response=CLIENT.recv(BUFSIZE).decode(FORMAT)
+        if response=='signin failed':
+            onErrorSignIn()
+        else:
+            successfullSignIn()
+            logIn()
 
 
 def logIn():
@@ -399,12 +349,10 @@ def logIn():
     log_in.tkraise()
 def recvDict(client):
     msg=client.recv(BUFSIZE).encode(FORMAT)
-
     print(dict)
-
     return dict
 
-def sendList( list):
+def sendList(list):
     for item in list:
         CLIENT.sendall(item.encode(FORMAT))
         #wait response
@@ -426,14 +374,8 @@ def confirmAcc(e=""):
     if response=='accepted':
         MainSearch()
         return
-
     onErrorLogIn()
 
-def onErrorLostConnection():
-    mbox.showerror("Error", "Sever đã đóng!")
-
-
-# MainSearch()
 def quit():
     while True:
         try:
@@ -481,6 +423,9 @@ CLIENT=socket(AF_INET,SOCK_STREAM)
 def catchHost(e=""):
     ip=ipHost_box.get()
     port=portHost_box.get()
+    # print(ip)
+    # print(port)
+    # port=int(port)
     try:
         CLIENT.connect((HOST,PORT))
         __init__()
@@ -513,17 +458,12 @@ def entryHost():
     host_btn=Button(entry_host,text="Submit",command=catchHost,bg="#000",fg="#fff", font=("Arial", 15), width=10)
     host_btn.pack(pady=5)
     changeOnHoverButton(host_btn)
-
     ipHost_box.focus_set()
     portHost_box.bind("<Return>",catchHost)
-
     entry_host.grid(row=0,column=0,sticky='nsew')
     entry_host.tkraise()
 
 entryHost()
 
 my_window.protocol("WM_DELETE_WINDOW", on_closing)
-
 my_window.mainloop()
-CLIENT.close()
-#dòng close này mới thêm
