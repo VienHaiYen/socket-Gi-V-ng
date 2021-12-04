@@ -1,24 +1,42 @@
-from tkinter import *
-from tkinter import ttk
-
-def callback():
-    text=cmb.get()
-    print(text)
-    
-window=Tk()
+import tkinter as tk 
+from tkinter import ttk 
+  
+# Creating tkinter window and set dimensions
+window = tk.Tk() 
 window.title('Combobox') 
-window.geometry('300x200')
+window.geometry('500x250')
 
-course=["none","Pizza1","Burger","Noodles","Pizza2","Pizza3","Pizza4","Pizza5","Pizza6","Pizza7","Pizza8"]
+def callbackFunc(event):
+     country = event.widget.get()
+     print(country)
+     
+# label text for title 
+ttk.Label(window, text = "Choose the country and vote for them",  
+          background = 'cyan', foreground ="black",  
+          font = ("Times New Roman", 15)).grid(row = 0, column = 1) 
+  
+# Set label 
+ttk.Label(window, text = "Select the Country :", 
+          font = ("Times New Roman", 12)).grid(column = 0, 
+          row = 5, padx = 5, pady = 25)
 
-l1=Label(window,text="Choose Your Favorite Food")
-l1.grid(column=0, row=0)
-cmb=ttk.Combobox(window,values=course,width=30,)
-cmb.grid(column=0, row=1)
+  
+# Create Combobox
+n = tk.StringVar() 
+country = ttk.Combobox(window, width = 27, textvariable = n) 
+  
+# Adding combobox drop down list 
+country['values'] = (' India',  
+                          ' China', 
+                          ' Australia', 
+                          ' Nigeria', 
+                          ' Malaysia', 
+                          ' Italy', 
+                          ' Turkey', 
+                          ' Canada') 
+  
+country.grid(column = 1, row = 5) 
+country.current()
+country.bind("<<ComboboxSelected>>", callbackFunc)
 
-btn=Button(window,text="Click Here",command=callback)
-btn.grid(column=0, row=2)
-
-l2=Label(window,text="")
-l2.grid(column=0, row=3)
 window.mainloop()

@@ -23,25 +23,36 @@ def setInterval(func,time=1800):
 
 def reachAPI():
     now = datetime.now()
-    api_link="https://tygia.com/json.php?ran=0&rate=0&gold=1&bank=VIETCOM"
+    api_link="https://tygia.com/json.php?ran=0&rate=0&gold=1&bank=VIETCOM&date=now"
     res = requests.get(api_link).text
     res=res[2:]
     data=json.loads(res)
-    data['last']=str(now)
-    f=open('test_api.json','w')
-    f.write(json.dumps(data))
+    #data['last']=str(now)
+    with open("test_api.json", "r", encoding='utf-8') as fin:
+        file = json.load(fin)
+        fin.close()
+    file['last']=str(now)
+    append=True
+    for i in range(0,len(file['golds'])):
+        if data['golds'][0]['date']==file['golds'][i]['date']:
+            file['golds'][i]=data['golds'][0]
+            append=False
+            break
+    if append:
+        file['golds'].insert(0,data['golds'][0])
+    f=open("test_api.json","w")
+    f.write(json.dumps(file))
     f.close()
     print("Updated")
-    with open("test_api.json", "r", encoding='utf-8') as fin:
-        data = json.load(fin)
-        fin.close()
-    timeline=[]
-    for i in range(0,len(data['golds'])):
-        timeline.append(data['golds'][i]['updated'])
-    # print("day la timeline : "+timeline)
-    f=open('date.json','w+')
-    f.write(json.dumps(timeline))
-    f.close()
+    # with open("test_api.json", "r", encoding='utf-8') as fin:
+    #     data = json.load(fin)
+    #     fin.close()
+    # timeline=[]
+    # for i in range(0,len(data['golds'])):
+    #     timeline.append(data['golds'][i]['updated'])
+    # f=open('date.json','w+')
+    # f.write(json.dumps(timeline))
+    # f.close()
 def start_api():
     with open("test_api.json", "r", encoding='utf-8') as fin:
         data = json.load(fin)
@@ -131,14 +142,7 @@ def pageTwo():
 
 def clearFrame():
     # destroy all widgets from frame
-    for widget in second_frame.winfo_children():
-       widget.destroy()
-    for widget in my_canvas.winfo_children():
-       widget.destroy()
-    my_canvas.pack_forget()
-    for widget in main_frame.winfo_children():
-       widget.destroy()
-    main_frame.pack_forget()
+    main_frame.destroy()
 
 choosenvalue=-1
 def getCombobox():
@@ -146,26 +150,14 @@ def getCombobox():
         clearFrame()
     except:
         pass
-    choosenvalue=daychoosen.get()
-    num=-1
-    print(len(combdate))
-    for i in range(0, len(combdate)):
-        print(combdate[i])
-        if combdate[i] == choosenvalue:
-            num=i
-            break
-    print(num)
-    with open('test_api.json', 'r', encoding='utf-8') as f:
-        data=json.load(f)
-        f.close()
-    x= data['golds']
-    print("chieu dai mang la: "+ str(len(x)))
-    x1=x[num]
-    value=x1['value']
-    n=1
-    global main_frame,my_canvas,second_frame, my_scrollbar
-    main_frame=Frame(pop2)
+    global main_frame
+    main_frame=Frame(display_frame)
+    main_frame.configure(bg="#fff")
+    loading=Label(main_frame,text="Loading",font=("Arial",10,"italic"),fg="grey",bg="#fff", width=15)
+    loading.pack(fill=BOTH)
     main_frame.pack(fill=BOTH,expand=1)
+    main_frame.update_idletasks()
+    
     my_canvas=Canvas(main_frame)
     my_canvas.pack(side=LEFT, fill=BOTH,expand=1)
     my_canvas.configure(bg="#fff")
@@ -173,30 +165,46 @@ def getCombobox():
     my_scrollbar.pack(side=RIGHT, fill=Y)
     my_canvas.configure(yscrollcommand=my_scrollbar.set)
     my_canvas.bind('<Configure>', lambda e:my_canvas.configure(scrollregion=my_canvas.bbox("all")))
+    
     global second_frame
     second_frame=Frame(my_canvas)
     second_frame.configure(bg="#fff")
     my_canvas.create_window((0,0), window=second_frame, anchor="nw")
-    second_frame.configure(bg="#fff")
+    out_frame=Frame(second_frame)
+    out_frame.configure(bg="#fff")
 
-    Label(second_frame, text="Company",bg="#fff",font=("Arial",10,"bold"),fg="blue").grid(column=1,row=0)
-    Label(second_frame, text="Brand",bg="#fff",font=("Arial",10,"bold"),fg="blue").grid(column=2,row=0)
-    Label(second_frame, text="Brand1",bg="#fff",font=("Arial",10,"bold"),fg="blue").grid(column=3,row=0)
-    Label(second_frame, text="Type",bg="#fff",font=("Arial",10,"bold"),fg="blue").grid(column=4,row=0)
-    Label(second_frame, text="Buy",bg="#fff",font=("Arial",10,"bold"),fg="blue").grid(column=5,row=0)
-    Label(second_frame, text="Sell",bg="#fff",font=("Arial",10,"bold"),fg="blue").grid(column=7,row=0)
+    choosenvalue=daychoosen.get()
+    num=-1
+    for i in range(0, len(combdate)):
+        print(combdate[i])
+        if combdate[i] == choosenvalue:
+            num=i
+            break
+    with open('test_api.json', 'r', encoding='utf-8') as f:
+        value=json.load(f)
+        f.close()
+    value=value['golds'][num]['value']
+    n=1
+    Label(out_frame, text="Company",bg="#fff",font=("Arial",10,"bold"),fg="blue").grid(column=1,row=0)
+    Label(out_frame, text="Brand",bg="#fff",font=("Arial",10,"bold"),fg="blue").grid(column=2,row=0)
+    Label(out_frame, text="Brand1",bg="#fff",font=("Arial",10,"bold"),fg="blue").grid(column=3,row=0)
+    Label(out_frame, text="Type",bg="#fff",font=("Arial",10,"bold"),fg="blue").grid(column=4,row=0)
+    Label(out_frame, text="Buy",bg="#fff",font=("Arial",10,"bold"),fg="blue").grid(column=5,row=0)
+    Label(out_frame, text="Sell",bg="#fff",font=("Arial",10,"bold"),fg="blue").grid(column=7,row=0)
     for i in range(0, len(value)):
-        Label(second_frame,text=n,bg="#fff").grid(column=0,row=n)
-        Label(second_frame, text=value[i]['company'],bg="#fff").grid(column=1,row=n)
-        Label(second_frame, text=value[i]['brand'],bg="#fff").grid(column=2,row=n)
-        Label(second_frame, text=value[i]['brand1'],bg="#fff").grid(column=3,row=n)
-        Label(second_frame, text=value[i]['type'],bg="#fff").grid(column=4,row=n)
-        Label(second_frame, text=value[i]['buy'],bg="#fff").grid(column=5,row=n)
-        Label(second_frame, text="      ",bg="#fff").grid(column=6,row=n)
-        Label(second_frame, text=value[i]['sell'],bg="#fff").grid(column=7,row=n)
+        Label(out_frame,text=n,bg="#fff").grid(column=0,row=n)
+        Label(out_frame, text=value[i]['company'],bg="#fff").grid(column=1,row=n)
+        Label(out_frame, text=value[i]['brand'],bg="#fff").grid(column=2,row=n)
+        Label(out_frame, text=value[i]['brand1'],bg="#fff").grid(column=3,row=n)
+        Label(out_frame, text=value[i]['type'],bg="#fff").grid(column=4,row=n)
+        Label(out_frame, text=value[i]['buy'],bg="#fff").grid(column=5,row=n)
+        Label(out_frame, text="      ",bg="#fff").grid(column=6,row=n)
+        Label(out_frame, text=value[i]['sell'],bg="#fff").grid(column=7,row=n)
         n=n+1
+    out_frame.pack(fill=BOTH,expand=True)
+    out_frame.wait_visibility()
+    loading.destroy()
 def pageThree():
-    global pop2
     pop2=Toplevel()
     pop2.geometry("700x500")
     pop2.title('Toan bo du lieu')
@@ -212,13 +220,18 @@ def pageThree():
     f.close()
     combdate=[]
     for i in data['golds']:
-        combdate.append(i['updated'])
+        combdate.append(i['updated'][0:i['updated'].find(' ')])
 
     daychoosen['value']=combdate
     daychoosen.current(0)
     daychoosen.grid(column=1,row=1)
     Label(combo_frame,text=" ").grid(column=2,row=1)
     Button(combo_frame, text="Chọn",width=12,font=("Arial",10,"bold"),command=getCombobox,bg="#000",fg="#fff").grid(column=3,row=1)
+    
+    global display_frame
+    display_frame=Frame(pop2)
+    display_frame.configure(bg="#fff")
+    display_frame.pack(fill=BOTH,expand=1)
     with open('test_api.json', 'r', encoding='utf-8') as f:
         data=json.load(f)
         f.close()
@@ -247,7 +260,7 @@ def recvList(conn):
     return list
 def sendResult(client,list):
     msg=json.dumps(list,ensure_ascii=False)
-    length=len(msg)
+    length=len(bytes(msg.encode(FORMAT)))
     client.send(bytes(str(length).encode(FORMAT)))
     client.recv(BUFSIZE)
     client.sendall(bytes(msg.encode(FORMAT)))
@@ -300,14 +313,18 @@ def checkSignin(client):
     print(msg)
 def search(client):
     # lấy search keys
-    brand,company=recvList(client)
+    brand,company,date=recvList(client)
     print(brand)
     print(company)
+    print(date)
     # mở file lấy data
     with open('test_api.json', 'r', encoding='utf-8') as f:
         file=json.load(f)
         f.close()
-    data= file['golds'][0]['value']
+    for i in file['golds']:
+        if date in i['updated']:
+            data=i['value']
+            break
     # lấy kết quả
     result=[]
     if brand!='none' and company!='none':
@@ -334,8 +351,7 @@ def acceptConnection():
             break
         except OSError:
             break
-def logOut(client,acc):
-    client.close()
+def logOut(acc):
     if acc=="":
         return
     f=open('onlinelist.json','r')
@@ -362,7 +378,8 @@ def sendGuiList(client):
     f.close()
     result={"brand" : [],"company":[],"date":[]}
     for i in data['golds']:
-        result['date'].append(i['updated'])
+        date=i['updated'][0:i['updated'].find(' ')]
+        result['date'].append(date)
         for j in i['value']:
             if j['company']!='' and not j['company'] in result['company']:
                 result['company'].append(j['company'])
@@ -385,13 +402,15 @@ def handleClient(client):
                 sendGuiList(client)
             elif option=='SEARCH':
                 search(client)
+            elif option=='LOGOUT':
+                logOut(acc)
             elif option=='exit':
-                print(acc)
+                client.close()
                 logOut(client,acc)
-                print("log out")
                 break
         except:
-            logOut(client,acc)
+            client.close()
+            logOut(acc)
             print('except')
             break
 SEVER.listen(5)

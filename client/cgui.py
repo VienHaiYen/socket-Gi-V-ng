@@ -12,6 +12,7 @@ import tkinter.messagebox as mbox
 from PIL import Image, ImageTk
 
 
+
 #
 my_window =Tk()
 my_window.title('Client Version')
@@ -28,20 +29,33 @@ def outputResult(result):
         clearFrame()
     except:
         pass
+    global second_big_frame_result
+    second_big_frame_result=Frame(second_big_frame_blank)
+    second_big_frame_result.pack(fill=BOTH,expand=1)
+    loading=Label(second_big_frame_result,text="Loading",font=("Arial",10,"italic"),fg="grey", width=15)
+    loading.pack(fill=BOTH)
+    second_big_frame_result.update_idletasks()
+
     global my_canvas
-    my_canvas=Canvas(second_big_frame)
+    my_canvas=Canvas(second_big_frame_result)
     my_canvas.pack(side=LEFT, fill=BOTH,expand=1)
+    
+    
     global my_scrollbar
-    my_scrollbar=ttk.Scrollbar(second_big_frame, orient=VERTICAL,command=my_canvas.yview)
+    my_scrollbar=ttk.Scrollbar(second_big_frame_result, orient=VERTICAL,command=my_canvas.yview)
     my_scrollbar.pack(side=RIGHT, fill=Y)
+    second_big_frame_result.focus_force()
     my_canvas.configure(yscrollcommand=my_scrollbar.set)
     my_canvas.bind('<Configure>', lambda e:my_canvas.configure(scrollregion=my_canvas.bbox("all")))
     global second_frame
     second_frame=Frame(my_canvas)
     my_canvas.create_window((0,0), window=second_frame, anchor="nw")
 
+
     global outFrame
     outFrame=Frame(second_frame)
+
+
     n=1
     Label(outFrame,text="Brand",font=("Arial",10,"bold"),fg="blue", width=15).grid(column=1,row=n)
     Label(outFrame,text="Company",font=("Arial",10,"bold"),fg="blue", width=10).grid(column=2,row=n)
@@ -49,7 +63,6 @@ def outputResult(result):
     Label(outFrame,text="Type",font=("Arial",10,"bold"),fg="blue", width=30).grid(column=4,row=n)
     Label(outFrame,font=("Arial",10,"bold"),fg="blue",text="Buy").grid(column=5,row=n)
     Label(outFrame,font=("Arial",10,"bold"),fg="blue",text="Sell").grid(column=6,row=n)
-    outFrame.pack(fill=BOTH)
     for i in range (0,len(result)):
         n=n+1
         Label(outFrame, text='   '+result[i]['brand']+'   ').grid(column=1,row=n)
@@ -58,13 +71,18 @@ def outputResult(result):
         Label(outFrame, text='   '+result[i]['type']+'   ').grid(column=4,row=n)
         Label(outFrame, text=' '+result[i]['buy']+' ').grid(column=5,row=n)
         Label(outFrame, text=' '+result[i]['sell']+' ').grid(column=6,row=n)
+    outFrame.pack(fill=BOTH)
+    outFrame.wait_visibility()
+    loading.destroy()
+
 def recvResult(conn):
     length=conn.recv(BUFSIZE).decode(FORMAT)
     conn.send(bytes(length.encode(FORMAT)))
     length=int(length)
-    response=""
+    response=b''
     while len(response)<length:
-        response=response+conn.recv(BUFSIZE).decode(FORMAT)
+        response=response+conn.recv(BUFSIZE)
+    response=response.decode(FORMAT)
     list=json.loads(response)
     return list
 
@@ -91,20 +109,13 @@ def startPage():
     changeOnHoverButton(signin)
     changeOnHoverButton(login)
     star_page.tkraise()
+    star_page.focus_force()
 
 def __init__():
     startPage()
 def clearFrame():
     # destroy all widgets from frame
-    for widget in outFrame.winfo_children():
-       widget.destroy()
-    for widget in second_frame.winfo_children():
-       widget.destroy()
-    second_frame.pack_forget()
-    for widget in my_canvas.winfo_children():
-       widget.destroy()
-    for widget in second_big_frame.winfo_children():
-       widget.destroy()
+    second_big_frame_result.destroy()
 
 def sendOption(option):
     try:
@@ -119,31 +130,45 @@ def transfer():
     sendOption('SEARCH')
     INPUT1=brand_box.get()
     INPUT2=company_box.get()
+    INPUT3=datecomb.get()
     if INPUT1=='':
         INPUT1='none'
     if INPUT2=='':
         INPUT2='none'
-    searchkey=[INPUT1,INPUT2]
+    searchkey=[INPUT1,INPUT2,INPUT3]
     sendList(searchkey)
     result=recvResult(CLIENT)
     if len(result)==0:
         onErrorSearching()
     else:
-        # Label(second_big_frame, text="Kết quả trả về cho Brand=\"" + INPUT1+ '\" Company=\"'+INPUT2+"\"", font=("Arial",10,"bold"), fg="#006699").pack()
         outputResult(result)
+def updateBrand(e):
+    typed=brand_box.get()
+    if typed=="":
+        data=guilist['brand']
+    else:
+        data=[]
+        for i in guilist['brand']:
+            if typed.lower() in i.lower():
+                data.append(i)
+    brand_box['value']=data
+    #brand_box.focus_force()
 
 def MainSearch():
     sendOption("GETGUILIST")
     # Dạng dict ["brand": [],"company": []]
+    global guilist
     guilist=recvResult(CLIENT)
     guilist['brand'].insert (0, '')
     guilist['company'].insert (0, '')
 
+    global search_page
     search_page=Frame(frame)
     search_page.configure(bg="#fff")
     my_window.geometry("780x700")
     my_window.title('Tim kiem Vang')
     search_page.tkraise()
+    search_page.focus_force()
 
     tempIMG=(Image.open("square.png"))
     startImg=tempIMG.resize((500,300),Image.ANTIALIAS)
@@ -177,6 +202,7 @@ def MainSearch():
     datecomb['value']=guilist['date']
     datecomb.current(0)
     datecomb.grid(column=1,row=2)
+    
 
     Label(input_bar,text="      ").grid(column=2,row=1)
     Label(input_bar, text="Gold Brand",font=("Arial",10,"bold"),justify="left").grid(column=3,row=1)
@@ -184,6 +210,7 @@ def MainSearch():
     brand_box['value']=guilist['brand']
     brand_box.current(0)
     brand_box.grid(column=3,row=2)
+    brand_box.bind("<KeyRelease>",updateBrand)
     # brand_box=Entry(input_bar,width=25,justify='center',font=("Arial",12))
     # brand_box.pack()
 
@@ -202,7 +229,7 @@ def MainSearch():
     tempIMG=(Image.open("exit.png"))
     startImg=tempIMG.resize((25,30),Image.ANTIALIAS)
     new_image= ImageTk.PhotoImage(startImg)
-    exit_btn = Button(input_bar, image=new_image,border=False)
+    exit_btn = Button(input_bar, image=new_image,border=False,command=logOut)
     exit_btn.image = new_image
     exit_btn.grid(column=8,row=0,rowspan=2)
 
@@ -220,9 +247,9 @@ def MainSearch():
     Label(search_page,text="", font=("ROBOTO",10)).pack(pady=10)
     search_page.grid(row=0,column=0,sticky='nsew')
 
-    global second_big_frame
-    second_big_frame=Frame(search_page)
-    second_big_frame.pack(fill=BOTH,expand=1)
+    global second_big_frame_blank
+    second_big_frame_blank=Frame(search_page)
+    second_big_frame_blank.pack(fill=BOTH,expand=1)
 
 
 
@@ -255,7 +282,7 @@ def sigIn():
     username_box.grid(column=2, row=1)
     Label(input_signin, text="   ", height=1,font=("Arial",2)).grid(column=1, row=2)
     Label(input_signin, text="Password: ", font=("Arial",10),bg="#fff").grid(column=1, row=3)
-    password_box=Entry(input_signin)
+    password_box=Entry(input_signin,show="*")
     password_box.grid(column=2, row=3)
     confirm=Button(sign_in,text="Sign-in Account",bg="#000", fg="#fff",command=saveNewAcc,width=20)
     confirm.place(x=310,y=170)
@@ -310,6 +337,9 @@ def saveNewAcc():
             successfullSignIn()
             logIn()
 
+def logOut():
+    sendOption('LOGOUT')
+    startPage()
 
 def logIn():
     log_in=Frame(frame)
@@ -333,7 +363,7 @@ def logIn():
     username_box_log.grid(column=2, row=1)
     Label(input_login, text="   ", height=1,font=("Arial",2)).grid(column=1, row=2)
     Label(input_login, text="Password: ",font=("Arial",10),bg="#fff").grid(column=1, row=3)
-    password_box_log=Entry(input_login)
+    password_box_log=Entry(input_login,show="*")
     password_box_log.grid(column=2, row=3)
     confirm=Button(log_in,text="Log-in Account",bg="#000", fg="#fff",command=confirmAcc,width=20)
     confirm.place(x=62,y=170)
@@ -347,10 +377,6 @@ def logIn():
 
     log_in.grid(row=0,column=0,sticky='nsew')
     log_in.tkraise()
-def recvDict(client):
-    msg=client.recv(BUFSIZE).encode(FORMAT)
-    print(dict)
-    return dict
 
 def sendList(list):
     for item in list:
@@ -391,16 +417,14 @@ error_server=Frame(frame)
 errorImg=PhotoImage(file="4042.jpg")
 errorBg=Label(error_server,image=errorImg)
 errorBg.pack()
+error_server.grid(row=0,column=0,sticky='nsew')
 
 def error404():
-    print(12345)
     my_window.title('Not responsding')
     my_window.geometry('600x600')
-    #
-    Label(error_server, text="Không thể kết nối được tới server, vui lòng thử lại", font=("Arial",15)).pack(pady=20)
 
-    error_server.grid(row=0,column=0,sticky='nsew')
     error_server.tkraise()
+    error_server.focus_force()
 
 
 def on_closing(event=None):
@@ -422,12 +446,9 @@ CLIENT=socket(AF_INET,SOCK_STREAM)
 
 def catchHost(e=""):
     ip=ipHost_box.get()
-    port=portHost_box.get()
-    # print(ip)
-    # print(port)
-    # port=int(port)
+    port=int(portHost_box.get())
     try:
-        CLIENT.connect((HOST,PORT))
+        CLIENT.connect((ip,port))
         __init__()
     except:
         print("Server is not responding")
