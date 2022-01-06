@@ -11,8 +11,6 @@ import tkinter.messagebox as mbox
 
 from PIL import Image, ImageTk
 
-
-
 #
 my_window =Tk()
 my_window.title('Client Version')
@@ -39,8 +37,7 @@ def outputResult(result):
     global my_canvas
     my_canvas=Canvas(second_big_frame_result)
     my_canvas.pack(side=LEFT, fill=BOTH,expand=1)
-    
-    
+
     global my_scrollbar
     my_scrollbar=ttk.Scrollbar(second_big_frame_result, orient=VERTICAL,command=my_canvas.yview)
     my_scrollbar.pack(side=RIGHT, fill=Y)
@@ -124,8 +121,6 @@ def sendOption(option):
         onErrorLostConnection()
         startPage()
 
-
-
 def transfer():
     sendOption('SEARCH')
     INPUT1=brand_box.get()
@@ -189,10 +184,8 @@ def MainSearch():
     label4.image = new_image
     label4.place(x=1500, y=0)
 
-    # Label(search_page,text="", font=("ROBOTO",10)).pack(pady=10)
     input_bar=Frame(search_page)
     input_bar.pack(pady=10)
-    # Label(input_bar,text="      ").grid(column=1,row=0)
     Label(input_bar, text="Date",font=("Arial",10,"bold"),justify="left").grid(column=1,row=1)
     global datecomb
     global brand_box
@@ -202,7 +195,7 @@ def MainSearch():
     datecomb['value']=guilist['date']
     datecomb.current(0)
     datecomb.grid(column=1,row=2)
-    
+
 
     Label(input_bar,text="      ").grid(column=2,row=1)
     Label(input_bar, text="Gold Brand",font=("Arial",10,"bold"),justify="left").grid(column=3,row=1)
@@ -211,8 +204,6 @@ def MainSearch():
     brand_box.current(0)
     brand_box.grid(column=3,row=2)
     brand_box.bind("<KeyRelease>",updateBrand)
-    # brand_box=Entry(input_bar,width=25,justify='center',font=("Arial",12))
-    # brand_box.pack()
 
     Label(input_bar,text="      ").grid(column=4,row=1)
     Label(input_bar, text="Gold Company",font=("Arial",10,"bold"),justify="left").grid(column=5,row=1)
@@ -220,12 +211,8 @@ def MainSearch():
     company_box['value']=guilist['company']
     company_box.current(0)
     company_box.grid(column=5,row=2)
-    # company_box=Entry(input_bar,width=25,justify='center',font=("Arial",12))
-    # company_box.pack()
-    # Label(input_bar,text="      ").grid(column=6,row=1)
 
     Label(input_bar,text="           ").grid(column=7,row=0)
-
     tempIMG=(Image.open("exit.png"))
     startImg=tempIMG.resize((25,30),Image.ANTIALIAS)
     new_image= ImageTk.PhotoImage(startImg)
@@ -234,7 +221,6 @@ def MainSearch():
     exit_btn.grid(column=8,row=0,rowspan=2)
 
     btn_frame=Frame(search_page)
-    # btn_frame.grid(column=7,row=1,rowspan=2)
     btn_frame.pack()
     submitbtn=Button(btn_frame, text="SUBMIT",font=("Arial",10,"bold"),width=15, command=transfer,bg="#333", fg="#fff")
     submitbtn.grid(column=1, row=1)
@@ -349,7 +335,7 @@ def logIn():
     tempIMG=(Image.open("tech5.jpg"))
     startImg=tempIMG.resize((800,400),Image.ANTIALIAS)
     new_image= ImageTk.PhotoImage(startImg)
-    # photo = PhotoImage(file="login.png")
+
     label = Label(log_in, image=new_image)
     label.image = new_image
     label.place(x=-50, y=-80)
@@ -410,7 +396,6 @@ def quit():
             msg='exit'
             print(msg)
             CLIENT.send(bytes(msg.encode(FORMAT)))
-#Thread(target=quit,daemon=True).start()
 
 
 error_server=Frame(frame)
@@ -467,12 +452,12 @@ def entryHost():
     iput_host=Frame(entry_host)
     iput_host.configure(bg="#fff")
     iput_host.pack()
-    ipHost=Label(iput_host, text="IP",fg="#333", font=("iCiel Crocante",15),bg="#fff").pack()
+    Label(iput_host, text="IP",fg="#333", font=("iCiel Crocante",15),bg="#fff").pack()
     global ipHost_box
     global portHost_box
     ipHost_box=Entry(iput_host,width=20,fg="blue",font=("iCiel Pacifico",20),justify='center',borderwidth=5)
     ipHost_box.pack()
-    portHost=Label(iput_host, text="Port",fg="#333", font=("iCiel Crocante",15),bg="#fff").pack()
+    Label(iput_host, text="Port",fg="#333", font=("iCiel Crocante",15),bg="#fff").pack()
     portHost_box=Entry(iput_host,width=20,fg="blue",font=("iCiel Pacifico",20),justify='center',borderwidth=5)
     portHost_box.pack()
 

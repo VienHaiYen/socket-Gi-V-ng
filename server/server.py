@@ -1,4 +1,3 @@
-from codecs import encode
 from re import search
 from socket import AF_INET, socket, SOCK_STREAM
 from threading import Thread
@@ -27,43 +26,37 @@ def reachAPI():
     res = requests.get(api_link).text
     res=res[2:]
     data=json.loads(res)
-    #data['last']=str(now)
-    with open("test_api.json", "r", encoding='utf-8') as fin:
+    with open("data.json", "r", encoding='utf-8') as fin:
         file = json.load(fin)
         fin.close()
     file['last']=str(now)
     append=True
-    for i in range(0,len(file['golds'])):
-        if data['golds'][0]['date']==file['golds'][i]['date']:
-            file['golds'][i]=data['golds'][0]
-            append=False
-            break
-    if append:
-        file['golds'].insert(0,data['golds'][0])
-    f=open("test_api.json","w")
+    try:
+        for i in range(0,len(file['golds'])):
+            if data['golds'][0]['date']==file['golds'][i]['date']:
+                file['golds'][i]=data['golds'][0]
+                append=False
+                break
+        if append:
+            file['golds'].insert(0,data['golds'][0])
+    except:
+        pass
+    f=open("data.json","w")
     f.write(json.dumps(file))
     f.close()
     print("Updated")
-    # with open("test_api.json", "r", encoding='utf-8') as fin:
-    #     data = json.load(fin)
-    #     fin.close()
-    # timeline=[]
-    # for i in range(0,len(data['golds'])):
-    #     timeline.append(data['golds'][i]['updated'])
-    # f=open('date.json','w+')
-    # f.write(json.dumps(timeline))
-    # f.close()
+
 def start_api():
-    with open("test_api.json", "r", encoding='utf-8') as fin:
+    with open("data.json", "r", encoding='utf-8') as fin:
         data = json.load(fin)
         fin.close()
     data=datetime.fromisoformat(data["last"])
     now = datetime.now()
     countdown=now-data
-    if countdown.seconds > 1800:
+    if countdown.total_seconds() > 1800:
         reachAPI()
     else:
-        setInterval(reachAPI,1800-countdown.seconds)
+        setInterval(reachAPI,1800-countdown.total_seconds())
     setInterval(reachAPI)
 # GUI Sever - sử dụng tkinter
 my_window =Tk()
@@ -93,24 +86,25 @@ def __init__(my_window):
 def display(x,accounts):
     main_frame=Frame(x)
     main_frame.pack(fill=BOTH,expand=1)
-    my_canvas=Canvas(main_frame)
+    my_canvas=Canvas(main_frame,bg="#fff")
     my_canvas.pack(side=LEFT, fill=BOTH,expand=1)
     my_scrollbar=ttk.Scrollbar(main_frame, orient=VERTICAL,command=my_canvas.yview)
     my_scrollbar.pack(side=RIGHT, fill=Y)
     my_canvas.configure(yscrollcommand=my_scrollbar.set)
+    my_canvas.config(bg="#fff")
     my_canvas.bind('<Configure>', lambda e:my_canvas.configure(scrollregion=my_canvas.bbox("all")))
     second_frame=Frame(my_canvas)
+    second_frame.configure(bg="#fff")
     my_canvas.create_window((0,0), window=second_frame, anchor="nw")
     n=1
     for i in range(0, len(accounts)):
         x=accounts[i]
         print(x['username'] + '   '+ x['password'])
-        num=Label(second_frame, text=n, width=10)
+        num=Label(second_frame, text=n, width=10,bg="#fff")
         num.grid(column=1, row=n)
-        n1=Label(second_frame, text=x['username'], width=20)
+        n1=Label(second_frame, text=x['username'],bg="#fff", width=20)
         n1.grid(column=2, row=n)
-        # n1.pack()
-        n2=Label(second_frame, text=x['password'],width=20)
+        n2=Label(second_frame, text=x['password'],bg="#fff",width=20)
         n2.grid(column=3, row=n)
         n=n+1
 
@@ -118,25 +112,40 @@ def pageOne():
     pop=Toplevel()
     pop.geometry("400x500")
     pop.title('Danh sach tai khoan')
-    lbl=Label(pop, text='TOTAL ACCOUNTS',font=("iCiel Pacifico",15))
+    tempIMG=(Image.open("111.jpg"))
+    startImg=tempIMG.resize((400,200),Image.ANTIALIAS)
+    new_image= ImageTk.PhotoImage(startImg)
+    label = Label(pop, image=new_image)
+    label.image = new_image
+    label.place(x=-5, y=0)
+
+    lbl=Label(pop, text='TOTAL ACCOUNTS',bg="#fff",font=("iCiel Pacifico",15))
     lbl.pack(padx=50, pady=5)
     with open('infoclient.json', 'r') as f:
         data=json.load(f)
         f.close()
     accounts=data['account']
-    lbl=Label(pop,text='Hien co ' + str(len(accounts)) + ' tai khoan da dang ki').pack()
+    lbl=Label(pop,text='Hien co ' + str(len(accounts)) + ' tai khoan da dang ki',bg="#fff").pack()
     display(pop,accounts)
 
 def pageTwo():
     pop1=Toplevel()
     pop1.geometry("400x500")
     pop1.title('Danh sach tai khoan')
+
+    tempIMG=(Image.open("111.jpg"))
+    startImg=tempIMG.resize((400,200),Image.ANTIALIAS)
+    new_image= ImageTk.PhotoImage(startImg)
+    label = Label(pop1, image=new_image)
+    label.image = new_image
+    label.place(x=-5, y=0)
+
     with open('onlinelist.json', 'r') as f:
         data=json.load(f)
         f.close()
         print(data)
     accounts=data['account']
-    lbl=Label(pop1, text='Online  NOW',font=("iCiel Pacifico",15))
+    lbl=Label(pop1, text='Online  NOW',bg="#fff",font=("iCiel Pacifico",15))
     lbl.pack(padx=50, pady=5)
     display(pop1,accounts)
 
@@ -157,7 +166,7 @@ def getCombobox():
     loading.pack(fill=BOTH)
     main_frame.pack(fill=BOTH,expand=1)
     main_frame.update_idletasks()
-    
+
     my_canvas=Canvas(main_frame)
     my_canvas.pack(side=LEFT, fill=BOTH,expand=1)
     my_canvas.configure(bg="#fff")
@@ -165,7 +174,7 @@ def getCombobox():
     my_scrollbar.pack(side=RIGHT, fill=Y)
     my_canvas.configure(yscrollcommand=my_scrollbar.set)
     my_canvas.bind('<Configure>', lambda e:my_canvas.configure(scrollregion=my_canvas.bbox("all")))
-    
+
     global second_frame
     second_frame=Frame(my_canvas)
     second_frame.configure(bg="#fff")
@@ -180,7 +189,7 @@ def getCombobox():
         if combdate[i] == choosenvalue:
             num=i
             break
-    with open('test_api.json', 'r', encoding='utf-8') as f:
+    with open('data.json', 'r', encoding='utf-8') as f:
         value=json.load(f)
         f.close()
     value=value['golds'][num]['value']
@@ -209,13 +218,21 @@ def pageThree():
     pop2.geometry("700x500")
     pop2.title('Toan bo du lieu')
     pop2.configure(bg="#fff")
+
+    tempIMG=(Image.open("111.jpg"))
+    startImg=tempIMG.resize((700,300),Image.ANTIALIAS)
+    new_image= ImageTk.PhotoImage(startImg)
+    label = Label(pop2, image=new_image)
+    label.image = new_image
+    label.place(x=-5, y=0)
+
     Label(pop2, text="BẢNG GIÁ VÀNG",font=("iCiel Pacifico",15),bg="#fff").pack()
     combo_frame=Frame(pop2)
     combo_frame.pack()
     global daychoosen, combdate
     daychoosen = ttk.Combobox(combo_frame,justify="center", width = 24)
 
-    f=open('test_api.json','r')
+    f=open('data.json','r')
     data=json.load(f)
     f.close()
     combdate=[]
@@ -227,12 +244,12 @@ def pageThree():
     daychoosen.grid(column=1,row=1)
     Label(combo_frame,text=" ").grid(column=2,row=1)
     Button(combo_frame, text="Chọn",width=12,font=("Arial",10,"bold"),command=getCombobox,bg="#000",fg="#fff").grid(column=3,row=1)
-    
+
     global display_frame
     display_frame=Frame(pop2)
     display_frame.configure(bg="#fff")
     display_frame.pack(fill=BOTH,expand=1)
-    with open('test_api.json', 'r', encoding='utf-8') as f:
+    with open('data.json', 'r', encoding='utf-8') as f:
         data=json.load(f)
         f.close()
     x= data['golds']
@@ -318,7 +335,7 @@ def search(client):
     print(company)
     print(date)
     # mở file lấy data
-    with open('test_api.json', 'r', encoding='utf-8') as f:
+    with open('data.json', 'r', encoding='utf-8') as f:
         file=json.load(f)
         f.close()
     for i in file['golds']:
@@ -373,7 +390,7 @@ def deleteOnlineList():
     f.write(json.dumps(data))
     f.close()
 def sendGuiList(client):
-    f=open('test_api.json','r')
+    f=open('data.json','r')
     data=json.load(f)
     f.close()
     result={"brand" : [],"company":[],"date":[]}
